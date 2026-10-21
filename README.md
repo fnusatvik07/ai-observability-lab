@@ -57,8 +57,8 @@ Written for complete beginners and designed for a one-hour class. Every notebook
 | | Notebook | What you learn |
 |---|---|---|
 | <img src="notebooks/assets/banner-00.svg" width="220"> | [**00 Setup**](notebooks/00_setup.ipynb) | Start Langfuse locally and check your keys (run before class) |
-| <img src="notebooks/assets/banner-01.svg" width="220"> | [**01 What is observability?**](notebooks/01_what_is_observability.ipynb) | Logs, metrics, traces and spans in plain words, explained with parcel tracking |
-| <img src="notebooks/assets/banner-02.svg" width="220"> | [**02 Langfuse**](notebooks/02_langfuse.ipynb) | Your first trace in a real dashboard, with two code changes |
+| <img src="notebooks/assets/banner-01.svg" width="220"> | [**01 What is observability?**](notebooks/01_what_is_observability.ipynb) | Logs, metrics, traces and spans in plain words, plus what a tracer, span processor, exporter and collector are |
+| <img src="notebooks/assets/banner-02.svg" width="220"> | [**02 Langfuse**](notebooks/02_langfuse.ipynb) | Install Docker, set up Langfuse and its admin account, then your first trace with two code changes |
 | <img src="notebooks/assets/banner-03.svg" width="220"> | [**03 LangSmith**](notebooks/03_langsmith.ipynb) | The same function in another tool, and a vocabulary map between tools |
 | <img src="notebooks/assets/banner-04.svg" width="220"> | [**04 Other tools**](notebooks/04_other_tools.ipynb) | OpenTelemetry as the common language, Datadog, Dynatrace, and how to choose |
 
@@ -70,11 +70,11 @@ Written for complete beginners and designed for a one-hour class. Every notebook
 
 | File | What it is |
 |---|---|
-| [`slides/AI-Observability.pptx`](slides/AI-Observability.pptx) | 37 slides with speaker notes and the explainer video embedded on slide 4 |
+| [`slides/AI-Observability.pptx`](slides/AI-Observability.pptx) | 32 slides in a light, consulting-style layout, with speaker notes and the explainer video embedded on slide 4 |
 | [`slides/AI-Observability.pdf`](slides/AI-Observability.pdf) | Handout version |
 | [`docs/01-session-plan.md`](docs/01-session-plan.md) | Minute-by-minute plan for the hour, teaching tips and likely questions |
 
-Rebuild the deck with `node slides/build_deck.js` (needs `pptxgenjs`, `react-icons`, `react`, `react-dom` and `sharp`).
+Rebuild the deck with `NODE_PATH=$(npm root -g) node slides/build_deck.js` (needs `pptxgenjs`).
 
 ## How it fits together
 
