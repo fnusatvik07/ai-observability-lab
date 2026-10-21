@@ -20,7 +20,7 @@
 ## Watch first
 
 <a href="video/out/ai-observability-explained.mp4">
-  <img src="docs/assets/video-thumbnail.jpg" alt="Watch the AI Observability explainer" width="100%">
+  <img src="video/thumbnail.jpg" alt="Watch the AI Observability explainer" width="100%">
 </a>
 
 A four-minute explainer covering why AI systems need observability, logs, metrics, traces and spans, OpenTelemetry, what to measure, and the tool landscape. Captions are in [`video/out/ai-observability-explained.srt`](video/out/ai-observability-explained.srt).
@@ -58,21 +58,20 @@ Written for complete beginners and designed for a one-hour class. Every notebook
 |---|---|---|
 | <img src="notebooks/assets/banner-00.svg" width="220"> | [**00 Setup**](notebooks/00_setup.ipynb) | Start Langfuse locally and check your keys (run before class) |
 | <img src="notebooks/assets/banner-01.svg" width="220"> | [**01 What is observability?**](notebooks/01_what_is_observability.ipynb) | Logs, metrics, traces and spans in plain words, plus what a tracer, span processor, exporter and collector are |
-| <img src="notebooks/assets/banner-02.svg" width="220"> | [**02 Langfuse**](notebooks/02_langfuse.ipynb) | Install Docker, set up Langfuse and its admin account, then your first trace with two code changes |
-| <img src="notebooks/assets/banner-03.svg" width="220"> | [**03 LangSmith**](notebooks/03_langsmith.ipynb) | The same function in another tool, and a vocabulary map between tools |
+| <img src="notebooks/assets/banner-02.svg" width="220"> | [**02 Langfuse**](notebooks/02_langfuse.ipynb) | Install Docker, set up Langfuse and its admin account, trace the function, then trace a travel agent with three tools |
+| <img src="notebooks/assets/banner-03.svg" width="220"> | [**03 LangSmith**](notebooks/03_langsmith.ipynb) | The same function and the same travel agent in LangSmith, with traces read back to confirm they arrived |
 | <img src="notebooks/assets/banner-04.svg" width="220"> | [**04 Other tools**](notebooks/04_other_tools.ipynb) | OpenTelemetry as the common language, Datadog, Dynatrace, and how to choose |
 
 ### Going further
 
 [`notebooks/advanced/`](notebooks/advanced/) holds deeper material for after the class: OpenTelemetry internals and context propagation, sessions, users, guardrails and LLM-as-a-judge scores in Langfuse, latency and cost analytics across models and prompt versions, and an OpenTelemetry Collector that removes personal data before it leaves your network.
 
-## Slides and session plan
+## Slides
 
 | File | What it is |
 |---|---|
 | [`slides/AI-Observability.pptx`](slides/AI-Observability.pptx) | 32 slides in Anthropic's published brand palette (Dark #141413, Light #FAF9F5, Orange #D97757, Blue #6A9BCC, Green #788C5D) with Poppins headings and Lora body text, speaker notes and the explainer video embedded on slide 4 |
 | [`slides/AI-Observability.pdf`](slides/AI-Observability.pdf) | Handout version |
-| [`docs/01-session-plan.md`](docs/01-session-plan.md) | Minute-by-minute plan for the hour, teaching tips and likely questions |
 
 Rebuild the deck with `NODE_PATH=$(npm root -g) node slides/build_deck.js` (needs `pptxgenjs`). For the intended look, install the fonts in [`slides/fonts/`](slides/fonts/) (Poppins and Lora, SIL Open Font License); the PDF already embeds them.
 
@@ -82,13 +81,13 @@ Rebuild the deck with `NODE_PATH=$(npm root -g) node slides/build_deck.js` (need
   <img src="notebooks/assets/otel-pipeline.svg" alt="OpenTelemetry pipeline" width="100%">
 </p>
 
-The same weather assistant is instrumented three ways, so you can compare them side by side:
+The same weather assistant is instrumented three ways, and notebooks 02 and 03 also trace a tool-using travel agent:
 
 | Approach | Where | Backend |
 |---|---|---|
-| Langfuse SDK (`@observe`, OpenAI drop-in) | notebook 02, `demo/langfuse_demo.py` | Langfuse |
-| LangSmith SDK (`@traceable`, `wrap_openai`) | notebook 03, `demo/langsmith_demo.py` | LangSmith |
-| Plain OpenTelemetry | notebooks 01 and 04, `demo/otel_demo.py` | Any OTLP backend |
+| Langfuse SDK (`@observe`, OpenAI drop-in) | notebook 02 | Langfuse |
+| LangSmith SDK (`@traceable`, `wrap_openai`) | notebook 03 | LangSmith |
+| Plain OpenTelemetry | notebooks 01 and 04 | Any OTLP backend |
 
 <p align="center">
   <img src="notebooks/assets/langfuse-stack.svg" alt="Langfuse self-hosted stack" width="100%">
@@ -102,7 +101,6 @@ The same weather assistant is instrumented three ways, so you can compare them s
 | `make up` | Start Langfuse and the Collector, wait for health |
 | `make lab` | Open JupyterLab |
 | `make test` | Execute every notebook top to bottom against the running stack |
-| `make demo` | Run the three standalone scripts in `demo/` |
 | `make down` | Stop containers, keep data |
 | `make reset` | Stop containers and delete all Langfuse data |
 
@@ -122,10 +120,8 @@ LANGSMITH_PROJECT=ai-observability-lab
 .
 ├── notebooks/          beginner notebooks 00 to 04, advanced/ deep dives, helpers and art
 ├── slides/             the deck (.pptx, .pdf) and the script that builds it
-├── demo/               the same agent as plain scripts (Langfuse, LangSmith, OpenTelemetry)
 ├── langfuse/           Docker Compose for self-hosted Langfuse v4 with headless init
 ├── collector/          OpenTelemetry Collector config: scrub, batch, fan out
-├── docs/               session plan, video script, demo runbook
 ├── video/              HyperFrames source for the explainer, renders to video/out/
 └── scripts/            banner generator
 ```

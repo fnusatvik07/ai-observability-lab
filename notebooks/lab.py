@@ -307,3 +307,52 @@ def draw_spans(spans, title: str = "One request, step by step") -> None:
     """Draw finished OpenTelemetry spans as a timeline (a 'waterfall')."""
     frame = spans_frame(spans)
     waterfall(frame[["id", "parent", "name", "kind", "start", "duration", "depth"]], title)
+
+
+# ---------------------------------------------------------------- LangSmith read helpers
+
+LANGSMITH_KIND = {"llm": "generation", "tool": "tool", "retriever": "retriever", "embedding": "embedding"}
+
+
+def langsmith_trace(run_id, tries: int = 20):
+    """Read a LangSmith run and all its child runs, waiting for ingestion if needed."""
+    from langsmith import Client
+
+    client = Client()
+    for _ in range(tries):
+        try:
+            return client.read_run(run_id, load_child_runs=True)
+        except Exception:
+            time.sleep(2)
+    raise RuntimeError(f"run {run_id} did not appear in LangSmith; check LANGSMITH_API_KEY and LANGSMITH_TRACING")
+
+
+def langsmith_frame(root) -> pd.DataFrame:
+    """Flatten a LangSmith run tree into the shape `waterfall` expects."""
+    rows = []
+
+    def walk(run, depth, parent):
+        start = (run.start_time - root.start_time).total_seconds()
+        duration = ((run.end_time or run.start_time) - run.start_time).total_seconds()
+        bits = [f"{duration * 1000:.0f} ms"]
+        if run.run_type == "llm" and run.total_tokens:
+            bits.append(f"{run.total_tokens} tok")
+            if run.total_cost:
+                bits.append(f"${float(run.total_cost):.6f}")
+        kind = LANGSMITH_KIND.get(run.run_type, "agent" if depth == 0 else "span")
+        rows.append(
+            {"id": str(run.id), "parent": parent, "name": run.name, "kind": kind, "start": start,
+             "duration": duration, "depth": depth, "label": "  ·  ".join(bits), "error": bool(run.error)}
+        )
+        for child in sorted(run.child_runs or [], key=lambda c: c.start_time):
+            walk(child, depth + 1, str(run.id))
+
+    walk(root, 0, None)
+    return pd.DataFrame(rows)
+
+
+def show_langsmith_trace(run_id, title: str = "Trace from LangSmith"):
+    """Fetch a run tree from LangSmith, draw it, and return the root run."""
+    root = langsmith_trace(run_id)
+    waterfall(langsmith_frame(root), title)
+    return root

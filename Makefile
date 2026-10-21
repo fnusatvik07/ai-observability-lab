@@ -1,4 +1,4 @@
-.PHONY: help setup up down reset lab test demo
+.PHONY: help setup up down reset lab test
 .DEFAULT_GOAL := help
 PY := .venv/bin/python
 
@@ -38,5 +38,3 @@ test: ## Execute every notebook top to bottom against the running stack
 	done
 	@echo "all notebooks passed"
 
-demo: ## Run the three standalone demo scripts
-	cd demo && ../$(PY) langfuse_demo.py && ../$(PY) otel_demo.py && ../$(PY) langsmith_demo.py
