@@ -9,13 +9,61 @@ const VIDEO = path.join(__dirname, "..", "video", "out", "ai-observability-expla
 const REPO = "github.com/fnusatvik07/ai-observability-lab";
 
 const W = 13.333, H = 7.5, M = 0.7;
-const C = {
-  bg: "F3F1EC", section: "E7E3DA", card: "FFFFFF", line: "DDD8CE",
-  ink: "1F2328", body: "3D4148", muted: "7A7F87",
-  blue: "2F5BD3", orange: "D9661F", green: "2E8B6F", purple: "7B5CC4", red: "C2413A",
-  codeBg: "FBFAF7", kw: "7C3AED", fn: "1D4ED8", str: "15803D", cm: "8A8F98",
+const LIGHT = {
+  bg: "F0EEE6", section: "E8E6DC", card: "FAF9F5", line: "D9D5C8",
+  ink: "141413", body: "3D3D3A", muted: "87867F",
 };
-const F = { sans: "Avenir Next", demi: "Avenir Next Demi Bold", mono: "Menlo" };
+const DARK = {
+  bg: "141413", section: "1F1E1D", card: "262624", line: "3A3936",
+  ink: "F0EEE6", body: "C9C6BC", muted: "8F8D86",
+};
+const C = {
+  ...LIGHT,
+  clay: "D97757", blue: "D97757", orange: "D97757", green: "788C5D", purple: "6A9BCC", red: "BF4D43",
+  kraft: "D4A27F", slate: "3D3D3A",
+  codeBg: "1A1918", codeInk: "E8E6DC", kw: "E08C6B", fn: "8DB4DC", str: "A7BC86", cm: "85837C",
+};
+function theme(dark) { Object.assign(C, dark ? DARK : LIGHT); }
+
+// Key phrase of each title, drawn in clay orange
+const HL = {
+  "Your AI assistant gave a wrong answer, and nothing told you why": "nothing told you why",
+  "Tonight: the basics first, then three tools on the same tiny example": "the basics first",
+  "Four-minute overview": "Four-minute",
+  "Monitoring tells you something is wrong; observability tells you why": "observability tells you why",
+  "AI apps break the old rules, so a green dashboard is not enough": "a green dashboard is not enough",
+  "You already use observability every time you track a parcel": "track a parcel",
+  "Our example is a two-step weather assistant, used in every notebook": "two-step weather assistant",
+  "Logs record what happened, but get hard to follow with many users": "Logs",
+  "Metrics summarize many requests, but not which step was slow": "Metrics",
+  "A trace shows one request step by step, and where time went": "A trace",
+  "Creating spans takes one line per step with OpenTelemetry": "one line per step",
+  "Four pieces move a span from your code to a tool": "Four pieces",
+  "For AI steps, a span also records the model, tokens and cost": "model, tokens and cost",
+  "OpenTelemetry is the common language all tools understand": "common language",
+  "Five things are worth watching in every AI app": "Five things",
+  "A friendlier prompt made answers longer and doubled the monthly bill": "doubled the monthly bill",
+  "Langfuse is a free, open source dashboard for AI traces": "free, open source",
+  "Setting up Langfuse on your laptop takes five steps": "five steps",
+  "Adding Langfuse takes two changes to the same function": "two changes",
+  "Langfuse adds the AI call details we never wrote": "we never wrote",
+  "LangSmith needs the same two changes, with different names": "different names",
+  "Each tool uses its own words for the same few ideas": "the same few ideas",
+  "Tools come in two groups: built for AI apps, or general monitoring": "two groups",
+  "Switching tools means changing an address, not code": "an address, not code",
+  "Pick the tool that fits your situation": "fits your situation",
+  "Four things to remember": "remember",
+};
+const DARK_SLIDES = new Set(["Four things to remember",
+  "Your AI assistant gave a wrong answer, and nothing told you why",
+  "You already use observability every time you track a parcel",
+  "A trace shows one request step by step, and where time went",
+  "OpenTelemetry is the common language all tools understand",
+  "Langfuse adds the AI call details we never wrote",
+  "Each tool uses its own words for the same few ideas",
+]);
+
+const F = { sans: "Avenir Next", serif: "Charter", mono: "Menlo" };
 
 const pres = new pptxgen();
 pres.layout = "LAYOUT_WIDE";
@@ -26,10 +74,12 @@ let page = 0;
 
 // ---------------------------------------------------------------- building blocks
 
-function slide(section) {
+function slide(section, dark = false) {
+  theme(dark);
   const s = pres.addSlide();
   page += 1;
   s.background = { color: C.bg };
+  s.addShape(pres.shapes.RECTANGLE, { x: 0, y: 0, w: 0.12, h: H, fill: { color: C.clay }, line: { color: C.clay, width: 0 } });
   if (section) {
     s.addText(section, { x: M, y: 0.4, w: 6, h: 0.3, fontFace: F.sans, fontSize: 11, color: C.muted, margin: 0 });
   }
@@ -39,7 +89,13 @@ function slide(section) {
 }
 
 function title(s, t, sub) {
-  s.addText(t, { x: M, y: 0.75, w: W - 2 * M, h: 0.75, fontFace: F.sans, bold: true, fontSize: 24, color: C.ink, margin: 0, valign: "top" });
+  const hl = HL[t];
+  let runs = [{ text: t, options: { color: C.ink } }];
+  if (hl && t.includes(hl)) {
+    const [pre, post] = [t.slice(0, t.indexOf(hl)), t.slice(t.indexOf(hl) + hl.length)];
+    runs = [pre && { text: pre, options: { color: C.ink } }, { text: hl, options: { color: C.clay, italic: true } }, post && { text: post, options: { color: C.ink } }].filter(Boolean);
+  }
+  s.addText(runs, { x: M, y: 0.72, w: W - 2 * M, h: 0.8, fontFace: F.serif, fontSize: 28, margin: 0, valign: "top" });
   if (sub) s.addText(sub, { x: M, y: 1.5, w: W - 2 * M, h: 0.4, fontFace: F.sans, fontSize: 15, color: C.muted, margin: 0 });
 }
 
@@ -52,12 +108,13 @@ function panel(s, x, y, w, h, fill = C.card) {
 }
 
 function code(s, x, y, w, h, lines, size = 14) {
-  panel(s, x, y, w, h, C.codeBg);
+  s.addShape(pres.shapes.RECTANGLE, { x, y, w, h, fill: { color: C.codeBg }, line: { color: C.codeBg, width: 0 } });
+  s.addShape(pres.shapes.RECTANGLE, { x, y, w: 0.06, h, fill: { color: C.clay }, line: { color: C.clay, width: 0 } });
   const runs = [];
   lines.forEach((line, i) => {
     const parts = Array.isArray(line) ? line : [[line, C.body]];
     parts.forEach(([t, color], j) =>
-      runs.push({ text: t, options: { color, breakLine: j === parts.length - 1 && i < lines.length - 1 } })
+      runs.push({ text: t, options: { color: color === C.ink || color === C.body ? C.codeInk : color, breakLine: j === parts.length - 1 && i < lines.length - 1 } })
     );
   });
   s.addText(runs, { x: x + 0.3, y: y + 0.25, w: w - 0.6, h: h - 0.5, fontFace: F.mono, fontSize: size, valign: "top", margin: 0, paraSpaceAfter: 3 });
@@ -70,10 +127,11 @@ function bullets(s, items, o) {
   );
 }
 
+function nextHeadFill() { return C.bg === DARK.bg ? C.clay : "141413"; }
 function table(s, rows, o) {
   const [head, ...body] = rows;
   const data = [
-    head.map((t) => ({ text: t, options: { bold: true, color: C.ink, fontFace: F.sans, bold: true, fontSize: 13, fill: { color: C.section } } })),
+    head.map((t) => ({ text: t, options: { bold: true, color: "F0EEE6", fontFace: F.sans, fontSize: 13, fill: { color: nextHeadFill() } } })),
     ...body.map((r) => r.map((t, j) => ({ text: t, options: { color: j === 0 ? C.ink : C.body, fontSize: 13, fill: { color: C.card } } }))),
   ];
   s.addTable(data, {
@@ -86,13 +144,17 @@ function source(s, str) {
 }
 
 function divider(num, name, line, notes) {
+  theme(true);
   const s = pres.addSlide();
   page += 1;
-  s.background = { color: C.section };
-  s.addText(num, { x: M, y: 2.2, w: 3, h: 1.0, fontFace: F.sans, bold: true, fontSize: 54, color: C.blue, margin: 0 });
-  s.addText(name, { x: M, y: 3.2, w: 11, h: 0.9, fontFace: F.sans, bold: true, fontSize: 40, color: C.ink, margin: 0 });
-  s.addText(line, { x: M, y: 4.15, w: 11, h: 0.5, fontFace: F.sans, fontSize: 18, color: C.body, margin: 0 });
+  s.background = { color: C.bg };
+  s.addShape(pres.shapes.RECTANGLE, { x: W - 4.4, y: 0, w: 4.4, h: H, fill: { color: C.clay }, line: { color: C.clay, width: 0 } });
+  s.addText(num, { x: W - 4.4, y: 1.6, w: 4.4, h: 4.2, fontFace: F.serif, fontSize: 240, color: "141413", align: "center", valign: "middle", margin: 0 });
+  s.addText("Part " + num, { x: M, y: 2.35, w: 7, h: 0.4, fontFace: F.sans, fontSize: 14, color: C.clay, bold: true, charSpacing: 2, margin: 0 });
+  s.addText(name, { x: M, y: 2.85, w: 7.8, h: 1.1, fontFace: F.serif, fontSize: 52, color: C.ink, margin: 0 });
+  s.addText(line, { x: M, y: 4.1, w: 7.4, h: 0.9, fontFace: F.sans, fontSize: 18, color: C.body, margin: 0, valign: "top" });
   s.addNotes(notes);
+  theme(false);
 }
 
 // A trace drawn as native shapes: rows of { name, start, dur, color, depth, note }
@@ -130,20 +192,30 @@ function arrow(s, x, y, w) {
 
 // 1. Title
 {
+  theme(true);
   const s = pres.addSlide();
   page += 1;
   s.background = { color: C.bg };
-  s.addText("Data Sense  ·  AI Discussions", { x: M, y: 1.7, w: 8, h: 0.35, fontFace: F.sans, fontSize: 14, color: C.muted, margin: 0 });
-  s.addText("AI Observability", { x: M, y: 2.2, w: 11, h: 1.1, fontFace: F.sans, bold: true, fontSize: 60, color: C.ink, margin: 0 });
-  s.addText("Foundations: see what your AI app is doing, step by step", { x: M, y: 3.35, w: 11, h: 0.6, fontFace: F.sans, fontSize: 24, color: C.body, margin: 0 });
-  s.addShape(pres.shapes.RECTANGLE, { x: M, y: 4.35, w: 1.2, h: 0.08, fill: { color: C.blue }, line: { color: C.blue, width: 0 } });
-  s.addText("Tuesday, October 20, 2026  ·  7:00 PM PT", { x: M, y: 6.3, w: 8, h: 0.35, fontFace: F.sans, fontSize: 13, color: C.muted, margin: 0 });
+  s.addText("Data Sense  ·  AI Discussions", { x: M, y: 1.35, w: 8, h: 0.35, fontFace: F.sans, fontSize: 14, bold: true, color: C.clay, charSpacing: 2, margin: 0 });
+  s.addText([{ text: "AI ", options: { color: C.ink } }, { text: "Observability", options: { color: C.clay, italic: true } }], { x: M, y: 1.9, w: 8, h: 1.3, fontFace: F.serif, fontSize: 66, margin: 0 });
+  s.addText("See what your AI app is doing, step by step.", { x: M, y: 3.3, w: 7.5, h: 0.6, fontFace: F.serif, fontSize: 24, color: C.body, margin: 0 });
+  s.addText("Foundations  ·  Tuesday, October 20, 2026  ·  7:00 PM PT", { x: M, y: 6.35, w: 8, h: 0.35, fontFace: F.sans, fontSize: 12, color: C.muted, margin: 0 });
+  // a trace, drawn as the cover art
+  const bars = [[0, 4.0, C.clay], [0, 1.5, C.kraft], [1.5, 2.5, "6A9BCC"], [1.6, 2.4, "788C5D"]];
+  const names = ["weather_assistant", "get_weather", "ask_ai", "gpt-4o-mini"];
+  s.addShape(pres.shapes.RECTANGLE, { x: 8.55, y: 1.55, w: 4.35, h: 3.3, fill: { color: C.card }, line: { color: C.line, width: 0.75 } });
+  bars.forEach(([st, w, color], i) => {
+    const y = 1.85 + i * 0.72;
+    s.addText(names[i], { x: 8.8 + (i ? 0.2 : 0) + (i === 3 ? 0.2 : 0), y, w: 3.5, h: 0.25, fontFace: F.mono, fontSize: 10, color: C.muted, margin: 0 });
+    s.addShape(pres.shapes.RECTANGLE, { x: 8.8 + st * 0.95, y: y + 0.28, w: w * 0.95, h: 0.2, fill: { color }, line: { color, width: 0 } });
+  });
   s.addNotes("Welcome. Tonight is about one skill: when an AI app misbehaves, being able to see exactly what happened inside it. No prior knowledge needed.");
+  theme(false);
 }
 
 // 2. The problem
 {
-  const s = slide("Why we are here");
+  const s = slide("Why we are here", true);
   title(s, "Your AI assistant gave a wrong answer, and nothing told you why");
   panel(s, M, 2.0, 5.8, 3.9);
   text(s, "Customer", { x: M + 0.4, y: 2.3, w: 3, h: 0.3, fontSize: 11, color: C.muted });
@@ -171,7 +243,7 @@ function arrow(s, x, y, w) {
   rows.forEach(([n, t, d, nb], i) => {
     const y = 2.0 + i * 1.05;
     s.addShape(pres.shapes.LINE, { x: M, y: y - 0.12, w: W - 2 * M, h: 0, line: { color: C.line, width: 0.75 } });
-    text(s, n, { x: M, y, w: 0.6, h: 0.7, fontFace: F.sans, bold: true, fontSize: 26, color: C.blue });
+    text(s, n, { x: M, y, w: 0.6, h: 0.7, fontFace: F.serif, fontSize: 32, color: C.clay });
     text(s, t, { x: M + 0.8, y: y + 0.05, w: 3.2, h: 0.5, fontFace: F.sans, bold: true, fontSize: 19, color: C.ink });
     text(s, d, { x: M + 4.1, y: y + 0.08, w: 5.8, h: 0.5, fontSize: 16 });
     text(s, nb, { x: W - M - 2, y: y + 0.08, w: 2, h: 0.5, fontSize: 13, color: C.muted, align: "right" });
@@ -224,12 +296,12 @@ divider("1", "The basics", "What observability means, and the four kinds of info
 
 // 8. Parcel analogy
 {
-  const s = slide("1  The basics");
+  const s = slide("1  The basics", true);
   title(s, "You already use observability every time you track a parcel");
   const rows = [
     ["Log", "“Door locked, will retry tomorrow”", "A short message about one moment", C.green],
     ["Metric", "“12,400 parcels delivered today”", "A number that summarizes many things", C.orange],
-    ["Trace", "The full tracking history of your parcel", "Everything that happened to one request", C.blue],
+    ["Trace", "The full tracking history of your parcel", "Everything that happened to one request", C.kraft],
     ["Span", "“Left warehouse, took 3 hours”", "One step inside a trace, with its duration", C.purple],
   ];
   text(s, "Software word", { x: M + 0.3, y: 1.95, w: 2, h: 0.3, fontSize: 11, color: C.muted });
@@ -293,7 +365,7 @@ divider("1", "The basics", "What observability means, and the four kinds of info
   [["4", "requests served"], ["1.20 s", "average time"], ["1.29 s", "slowest request"]].forEach(([v, l], i) => {
     const x = M + i * 4.05;
     panel(s, x, 2.0, 3.8, 2.0);
-    text(s, v, { x: x + 0.4, y: 2.25, w: 3.2, h: 0.9, fontFace: F.sans, bold: true, fontSize: 44, color: C.orange });
+    text(s, v, { x: x + 0.4, y: 2.2, w: 3.2, h: 0.95, fontFace: F.serif, fontSize: 50, color: C.clay });
     text(s, l, { x: x + 0.4, y: 3.25, w: 3.2, h: 0.4, fontSize: 15 });
   });
   text(s, "On a real system these numbers live on a dashboard, with an alert when the average goes above a limit.", { x: M, y: 4.4, w: 11.9, h: 0.5, fontSize: 16 });
@@ -304,12 +376,12 @@ divider("1", "The basics", "What observability means, and the four kinds of info
 
 // 12. Trace
 {
-  const s = slide("1  The basics");
+  const s = slide("1  The basics", true);
   title(s, "A trace shows one request step by step, and where time went");
   panel(s, M, 1.95, W - 2 * M, 2.6);
   waterfall(s, M + 0.3, 2.15, W - 2 * M - 0.6, [
-    { name: "weather_assistant", start: 0, dur: 1.17, color: C.blue, depth: 0, note: "1.17 s  (whole request)" },
-    { name: "get_weather", start: 0, dur: 0.50, color: C.orange, depth: 1, note: "0.50 s" },
+    { name: "weather_assistant", start: 0, dur: 1.17, color: C.clay, depth: 0, note: "1.17 s  (whole request)" },
+    { name: "get_weather", start: 0, dur: 0.50, color: C.kraft, depth: 1, note: "0.50 s" },
     { name: "ask_ai", start: 0.50, dur: 0.66, color: C.green, depth: 1, note: "0.66 s" },
   ], [0, 0.5, 1.0, 1.5]);
   text(s, "Trace", { x: M, y: 4.85, w: 2, h: 0.35, fontFace: F.sans, bold: true, fontSize: 16, color: C.blue });
@@ -379,7 +451,7 @@ divider("1", "The basics", "What observability means, and the four kinds of info
 
 // 15. OpenTelemetry pipeline
 {
-  const s = slide("1  The basics");
+  const s = slide("1  The basics", true);
   title(s, "OpenTelemetry is the common language all tools understand");
   const y = 2.5;
   box(s, M, y, 2.8, 1.4, "Your app", "creates spans with OpenTelemetry");
@@ -409,7 +481,7 @@ divider("1", "The basics", "What observability means, and the four kinds of info
   ].forEach(([t, d], i) => {
     const x = M + i * 2.42, w = 2.25;
     panel(s, x, 2.0, w, 2.6);
-    text(s, String(i + 1), { x: x + 0.25, y: 2.2, w: 1, h: 0.5, fontFace: F.sans, bold: true, fontSize: 22, color: C.blue });
+    text(s, String(i + 1), { x: x + 0.25, y: 2.2, w: 1, h: 0.5, fontFace: F.serif, fontSize: 28, color: C.clay });
     text(s, t, { x: x + 0.25, y: 2.75, w: w - 0.4, h: 0.4, fontFace: F.sans, bold: true, fontSize: 18, color: C.ink });
     text(s, d, { x: x + 0.25, y: 3.25, w: w - 0.4, h: 1.2, fontSize: 13 });
   });
@@ -426,7 +498,7 @@ divider("1", "The basics", "What observability means, and the four kinds of info
     { name: "Friendly prompt", labels: ["gpt-4.1-nano", "gpt-4o-mini"], values: [12.6, 21.5] },
   ], {
     x: M, y: 1.95, w: 7.6, h: 4.4, barDir: "col", barGapWidthPct: 60,
-    chartColors: [C.blue, C.orange], chartArea: { fill: { color: C.card }, border: { color: C.line, pt: 0.75 } },
+    chartColors: ["3D3D3A", C.clay], chartArea: { fill: { color: C.card }, border: { color: C.line, pt: 0.75 } },
     plotArea: { fill: { color: C.card } },
     catAxisLabelColor: C.body, valAxisLabelColor: C.muted, catAxisLabelFontFace: F.sans, valAxisLabelFontFace: F.sans,
     catAxisLabelFontSize: 12, valAxisLabelFontSize: 10, valGridLine: { color: "E8E4DB", size: 0.5 }, catGridLine: { style: "none" },
@@ -434,9 +506,9 @@ divider("1", "The basics", "What observability means, and the four kinds of info
     showLegend: true, legendPos: "t", legendFontFace: F.sans, legendFontSize: 12, legendColor: C.body,
     valAxisLabelFormatCode: "$0",
   });
-  text(s, "31 tokens", { x: 8.8, y: 2.0, w: 4, h: 0.6, fontFace: F.sans, bold: true, fontSize: 30, color: C.blue });
+  text(s, "31 tokens", { x: 8.8, y: 2.0, w: 4, h: 0.6, fontFace: F.serif, fontSize: 32, color: C.ink });
   text(s, "average answer, concise prompt", { x: 8.8, y: 2.6, w: 4, h: 0.35, fontSize: 13, color: C.muted });
-  text(s, "87 tokens", { x: 8.8, y: 3.2, w: 4, h: 0.6, fontFace: F.sans, bold: true, fontSize: 30, color: C.orange });
+  text(s, "87 tokens", { x: 8.8, y: 3.2, w: 4, h: 0.6, fontFace: F.serif, fontSize: 32, color: C.clay });
   text(s, "average answer, friendly prompt", { x: 8.8, y: 3.8, w: 4, h: 0.35, fontSize: 13, color: C.muted });
   text(s, "Longer answers mean more tokens, and more tokens mean more money. You only see this if you measure it.", { x: 8.8, y: 4.5, w: 3.9, h: 1.4, fontSize: 14 });
   source(s, "Projected cost at 10,000 requests per day, USD per month. Measured on 48 real requests (notebooks/advanced/05).");
@@ -481,10 +553,10 @@ divider("2", "Langfuse", "Send the same assistant to a real dashboard, running o
   steps.forEach(([n, t, d, cmd], i) => {
     const y = 1.85 + i * 0.93;
     panel(s, M, y, W - 2 * M, 0.8);
-    text(s, n, { x: M + 0.25, y, w: 0.5, h: 0.8, fontFace: F.sans, bold: true, fontSize: 22, color: C.blue, valign: "middle" });
+    text(s, n, { x: M + 0.25, y, w: 0.5, h: 0.8, fontFace: F.serif, fontSize: 28, color: C.clay, valign: "middle" });
     text(s, t, { x: M + 0.8, y: y + 0.1, w: 3.4, h: 0.35, fontFace: F.sans, bold: true, fontSize: 15, color: C.ink });
     text(s, d, { x: M + 0.8, y: y + 0.42, w: 4.7, h: 0.3, fontSize: 12, color: C.muted });
-    text(s, cmd, { x: M + 5.6, y, w: 6.2, h: 0.8, fontFace: F.mono, fontSize: 12, color: C.str, valign: "middle" });
+    text(s, cmd, { x: M + 5.6, y, w: 6.2, h: 0.8, fontFace: F.mono, fontSize: 12, color: C.ink, valign: "middle" });
   });
   source(s, "Shortcut used tonight: the repo's make up starts the same stack and creates the admin login and keys automatically.");
   s.addNotes("Walk through the five steps once, slowly. Docker Desktop runs the containers. The official repo contains the docker compose file. There is no default admin: you sign up, and you own the organization and project you create. API keys belong to a project. Tonight I used the repo's make up, which does the same thing and pre-creates the admin login and keys through Langfuse's headless initialization settings.");
@@ -517,12 +589,12 @@ divider("2", "Langfuse", "Send the same assistant to a real dashboard, running o
 
 // 21. Result
 {
-  const s = slide("2  Langfuse");
+  const s = slide("2  Langfuse", true);
   title(s, "Langfuse adds the AI call details we never wrote");
   panel(s, M, 1.95, W - 2 * M, 2.95);
   waterfall(s, M + 0.3, 2.15, W - 2 * M - 0.6, [
-    { name: "weather_assistant", start: 0, dur: 1.03, color: C.blue, depth: 0, note: "1.03 s" },
-    { name: "get_weather", start: 0, dur: 0.50, color: C.orange, depth: 1, note: "0.50 s" },
+    { name: "weather_assistant", start: 0, dur: 1.03, color: C.clay, depth: 0, note: "1.03 s" },
+    { name: "get_weather", start: 0, dur: 0.50, color: C.kraft, depth: 1, note: "0.50 s" },
     { name: "ask_ai", start: 0.50, dur: 0.53, color: C.green, depth: 1, note: "0.53 s" },
     { name: "OpenAI-generation", start: 0.50, dur: 0.53, color: C.purple, depth: 2, note: "39 tokens  ·  $0.000009" },
   ], [0, 0.5, 1.0, 1.5]);
@@ -552,7 +624,7 @@ divider("3", "LangSmith", "The same assistant in a second tool. Notice how littl
 
 // 24. Vocabulary
 {
-  const s = slide("3  LangSmith");
+  const s = slide("3  LangSmith", true);
   title(s, "Each tool uses its own words for the same few ideas");
   table(s, [
     ["The idea", "OpenTelemetry", "Langfuse", "LangSmith"],
@@ -622,7 +694,7 @@ divider("4", "Other tools", "Langfuse and LangSmith are not the only options.", 
 
 // 29. Recap
 {
-  const s = slide("Recap");
+  const s = slide("Recap", true);
   title(s, "Four things to remember");
   [
     ["Observability", "means your app leaves enough behind to explain what happened."],
@@ -631,7 +703,7 @@ divider("4", "Other tools", "Langfuse and LangSmith are not the only options.", 
     ["OpenTelemetry", "is the common language, so you can switch tools without rewriting code."],
   ].forEach(([a, b], i) => {
     const y = 2.0 + i * 1.0;
-    text(s, String(i + 1), { x: M, y, w: 0.6, h: 0.6, fontFace: F.sans, bold: true, fontSize: 24, color: C.blue });
+    text(s, String(i + 1), { x: M, y, w: 0.6, h: 0.6, fontFace: F.serif, fontSize: 30, color: C.clay });
     s.addText([{ text: a + " ", options: { fontFace: F.sans, bold: true, color: C.ink } }, { text: b, options: { color: C.body } }], { x: M + 0.7, y: y + 0.05, w: 11.2, h: 0.6, fontFace: F.sans, fontSize: 19, margin: 0, valign: "top" });
   });
   s.addNotes("Read the four points aloud. If people remember one thing: a trace is the story of one request, and spans are its steps.");
@@ -639,8 +711,8 @@ divider("4", "Other tools", "Langfuse and LangSmith are not the only options.", 
 
 // 30. Questions
 {
-  const s = slide(null);
-  s.addText("Questions?", { x: M, y: 1.6, w: 8, h: 1.1, fontFace: F.sans, bold: true, fontSize: 54, color: C.ink, margin: 0 });
+  const s = slide(null, true);
+  s.addText([{ text: "Questions", options: { color: C.ink } }, { text: "?", options: { color: C.clay } }], { x: M, y: 1.5, w: 8, h: 1.2, fontFace: F.serif, fontSize: 64, margin: 0 });
   text(s, "Try it yourself", { x: M, y: 3.1, w: 6, h: 0.35, fontFace: F.sans, bold: true, fontSize: 16, color: C.ink });
   text(s, REPO, { x: M, y: 3.5, w: 8, h: 0.4, fontFace: F.mono, fontSize: 15, color: C.blue });
   text(s, "make setup  ·  make up  ·  make lab", { x: M, y: 3.95, w: 8, h: 0.4, fontFace: F.mono, fontSize: 13, color: C.muted });

@@ -70,7 +70,7 @@ Written for complete beginners and designed for a one-hour class. Every notebook
 
 | File | What it is |
 |---|---|
-| [`slides/AI-Observability.pptx`](slides/AI-Observability.pptx) | 32 slides in a light, consulting-style layout, with speaker notes and the explainer video embedded on slide 4 |
+| [`slides/AI-Observability.pptx`](slides/AI-Observability.pptx) | 32 slides in an ivory, charcoal and clay-orange design, with speaker notes and the explainer video embedded on slide 4 |
 | [`slides/AI-Observability.pdf`](slides/AI-Observability.pdf) | Handout version |
 | [`docs/01-session-plan.md`](docs/01-session-plan.md) | Minute-by-minute plan for the hour, teaching tips and likely questions |
 
