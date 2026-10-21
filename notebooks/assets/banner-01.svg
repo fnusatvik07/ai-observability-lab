@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="Logs, Metrics, Traces, Spans">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1020"/>
+      <stop offset="1" stop-color="#151B33"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.85" cy="0.1" r="0.7">
+      <stop offset="0" stop-color="#8B5CF6" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M24 0H0V24" fill="none" stroke="#ffffff" stroke-opacity="0.035"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="300" rx="20" fill="url(#bg)"/>
+  <rect width="1200" height="300" rx="20" fill="url(#grid)"/>
+  <rect width="1200" height="300" rx="20" fill="url(#glow)"/>
+  <text x="64" y="92" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="3" fill="#2DD4BF">AI OBSERVABILITY LAB  ·  01</text>
+  <text x="64" y="160" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="50" font-weight="800" fill="#F8FAFC">Logs, Metrics, Traces, Spans</text>
+  <text x="64" y="206" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" fill="#94A3B8">Four signals, one function, real data</text>
+  <rect x="64" y="236" width="56" height="4" rx="2" fill="#2DD4BF"/>
+  <rect x="840.0" y="92" width="300.0" height="16" rx="5" fill="#8B5CF6" opacity="0.92"/>
+  <line x1="840" y1="100" x2="1140" y2="100" stroke="#ffffff" stroke-opacity="0.05"/>
+  <rect x="846.0" y="122" width="36.0" height="16" rx="5" fill="#22D3EE" opacity="0.92"/>
+  <line x1="840" y1="130" x2="1140" y2="130" stroke="#ffffff" stroke-opacity="0.05"/>
+  <rect x="885.0" y="152" width="114.0" height="16" rx="5" fill="#F59E0B" opacity="0.92"/>
+  <line x1="840" y1="160" x2="1140" y2="160" stroke="#ffffff" stroke-opacity="0.05"/>
+  <rect x="1005.0" y="182" width="129.0" height="16" rx="5" fill="#2DD4BF" opacity="0.92"/>
+  <line x1="840" y1="190" x2="1140" y2="190" stroke="#ffffff" stroke-opacity="0.05"/>
+  <rect x="1014.0" y="212" width="27.0" height="16" rx="5" fill="#F472B6" opacity="0.92"/>
+  <line x1="840" y1="220" x2="1140" y2="220" stroke="#ffffff" stroke-opacity="0.05"/>
+</svg>

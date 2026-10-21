@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>AI Observability, Explained</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Instrument Serif";
+        src: url("assets/fonts/InstrumentSerif-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Instrument Serif";
+        src: url("assets/fonts/InstrumentSerif-Italic.ttf") format("truetype");
+        font-weight: 400;
+        font-style: italic;
+      }
+      :root {
+        --bg: #0a0e15;
+        --surface: #111827;
+        --surface-2: #172036;
+        --line: #273352;
+        --fg: #eeeae0;
+        --muted: #9aa1b5;
+        --dim: #737c95;
+        --amber: #f5a800;
+        --amber-soft: rgba(245, 168, 0, 0.16);
+        --indigo: #7b8ff5;
+        --ok: #3dbe8b;
+        --err: #f2594b;
+        --serif: "Instrument Serif", Georgia, serif;
+        --mono: "JetBrains Mono", "IBM Plex Mono", monospace;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: var(--mono);
+      }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; }
+
+      /* persistent background */
+      .bg-layer { position: absolute; inset: 0; }
+      #bg-grid {
+        inset: -80px;
+        background-image:
+          linear-gradient(rgba(150, 164, 205, 0.075) 2px, transparent 2px),
+          linear-gradient(90deg, rgba(150, 164, 205, 0.075) 2px, transparent 2px);
+        background-size: 80px 80px;
+      }
+      .glow { position: absolute; border-radius: 50%; }
+      #glow-a {
+        width: 1400px; height: 1400px; left: -380px; top: -620px;
+        background: radial-gradient(circle, rgba(245, 168, 0, 0.17) 0%, rgba(245, 168, 0, 0) 62%);
+      }
+      #glow-b {
+        width: 1500px; height: 1500px; right: -520px; bottom: -760px;
+        background: radial-gradient(circle, rgba(91, 116, 224, 0.2) 0%, rgba(91, 116, 224, 0) 62%);
+      }
+      #vignette { background: radial-gradient(ellipse at center, rgba(10, 14, 21, 0) 55%, rgba(5, 7, 11, 0.75) 100%); }
+      #grain {
+        opacity: 0.07;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      }
+
+      /* chrome */
+      .chrome { position: absolute; inset: 0; pointer-events: none; }
+      #brand {
+        position: absolute; left: 72px; top: 52px;
+        display: flex; align-items: center; gap: 14px;
+        font: 700 20px var(--mono); letter-spacing: 0.2em; color: var(--muted);
+      }
+      #brand .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--amber); display: block; }
+      .chapter {
+        position: absolute; right: 72px; top: 52px;
+        font: 400 20px var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted);
+      }
+      #progress { position: absolute; left: 72px; right: 72px; bottom: 44px; height: 4px; background: rgba(150, 164, 205, 0.16); border-radius: 2px; }
+      #progress-fill { position: absolute; inset: 0; background: var(--amber); border-radius: 2px; transform-origin: left center; }
+      .tick { position: absolute; top: -5px; width: 2px; height: 14px; background: rgba(238, 234, 224, 0.35); }
+
+      /* shared scene vocabulary, used by every sub-composition */
+      .scene { position: absolute; inset: 0; padding: 140px 120px 120px; }
+      .kicker { font: 700 22px var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); }
+      .display { font-family: var(--serif); font-weight: 400; letter-spacing: -0.02em; line-height: 1.02; color: var(--fg); }
+      .display em { font-style: italic; color: var(--amber); }
+      .lede { font: 400 30px/1.45 var(--mono); color: var(--muted); }
+      .panel { background: var(--surface); border: 2px solid var(--line); border-radius: 22px; }
+      .chip {
+        display: inline-flex; align-items: center; gap: 12px;
+        padding: 12px 22px; border-radius: 999px;
+        border: 2px solid var(--line); background: var(--surface-2);
+        font: 400 24px var(--mono); color: var(--fg); white-space: nowrap;
+      }
+      .chip .led { width: 12px; height: 12px; border-radius: 50%; display: block; }
+      .led.ok { background: var(--ok); }
+      .led.err { background: var(--err); }
+      .led.warn { background: var(--amber); }
+      .k { color: var(--indigo); }
+      .s { color: #e9c46a; }
+      .n { color: var(--ok); }
+      .c { color: var(--dim); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="253.349" data-width="1920" data-height="1080">
+      <div id="bg" class="bg-layer">
+        <div id="bg-grid" class="bg-layer"></div>
+        <div id="glow-a" class="glow"></div>
+        <div id="glow-b" class="glow"></div>
+        <div id="vignette" class="bg-layer"></div>
+        <div id="grain" class="bg-layer"></div>
+      </div>
+
+      <div id="s01-hook" data-composition-id="s01-hook" data-composition-src="compositions/s01-hook.html" data-start="0" data-duration="19.214" data-track-index="2" data-width="1920" data-height="1080"></div>
+      <div id="s02-define" data-composition-id="s02-define" data-composition-src="compositions/s02-define.html" data-start="19.214" data-duration="16.050" data-track-index="3" data-width="1920" data-height="1080"></div>
+      <div id="s03-different" data-composition-id="s03-different" data-composition-src="compositions/s03-different.html" data-start="35.264" data-duration="26.850" data-track-index="2" data-width="1920" data-height="1080"></div>
+      <div id="s04-logs" data-composition-id="s04-logs" data-composition-src="compositions/s04-logs.html" data-start="62.114" data-duration="20.298" data-track-index="3" data-width="1920" data-height="1080"></div>
+      <div id="s05-metrics" data-composition-id="s05-metrics" data-composition-src="compositions/s05-metrics.html" data-start="82.412" data-duration="15.858" data-track-index="2" data-width="1920" data-height="1080"></div>
+      <div id="s06-traces" data-composition-id="s06-traces" data-composition-src="compositions/s06-traces.html" data-start="98.27" data-duration="24.965" data-track-index="3" data-width="1920" data-height="1080"></div>
+      <div id="s07-otel" data-composition-id="s07-otel" data-composition-src="compositions/s07-otel.html" data-start="123.235" data-duration="20.754" data-track-index="2" data-width="1920" data-height="1080"></div>
+      <div id="s08-semconv" data-composition-id="s08-semconv" data-composition-src="compositions/s08-semconv.html" data-start="143.989" data-duration="15.306" data-track-index="3" data-width="1920" data-height="1080"></div>
+      <div id="s08b-code" data-composition-id="s08b-code" data-composition-src="compositions/s08b-code.html" data-start="159.295" data-duration="12.810" data-track-index="2" data-width="1920" data-height="1080"></div>
+      <div id="s09-measure" data-composition-id="s09-measure" data-composition-src="compositions/s09-measure.html" data-start="172.105" data-duration="31.098" data-track-index="3" data-width="1920" data-height="1080"></div>
+      <div id="s10-tools" data-composition-id="s10-tools" data-composition-src="compositions/s10-tools.html" data-start="203.203" data-duration="30.402" data-track-index="2" data-width="1920" data-height="1080"></div>
+      <div id="s11-close" data-composition-id="s11-close" data-composition-src="compositions/s11-close.html" data-start="233.605" data-duration="19.744" data-track-index="3" data-width="1920" data-height="1080"></div>
+
+      <div id="chrome" class="chrome">
+        <div id="brand"><span class="dot"></span><span>AI OBSERVABILITY</span></div>
+        <div id="progress"><div id="progress-fill"></div><i class="tick" style="left:7.584%"></i><i class="tick" style="left:13.919%"></i><i class="tick" style="left:24.517%"></i><i class="tick" style="left:32.529%"></i><i class="tick" style="left:38.788%"></i><i class="tick" style="left:48.642%"></i><i class="tick" style="left:56.834%"></i><i class="tick" style="left:62.876%"></i><i class="tick" style="left:67.932%"></i><i class="tick" style="left:80.207%"></i><i class="tick" style="left:92.207%"></i></div>
+        <div id="chapter-wrap"></div>
+      </div>
+
+      <audio id="narration" src="assets/audio/narration.m4a" data-start="0" data-duration="253.349" data-track-index="0" data-volume="1"></audio>
+      <audio id="music-bed" src="assets/audio/bed.m4a" data-start="0" data-duration="253.349" data-track-index="1" data-volume="1"></audio>
+    </div>
+    <script>
+      const TOTAL = 253.349;
+      const CHAPTERS = [[0, ""], [19.214, "01  What it is"], [35.264, "02  Why AI is different"], [62.114, "03  The four signals"], [82.412, "03  The four signals"], [98.27, "03  The four signals"], [123.235, "04  OpenTelemetry"], [143.989, "04  OpenTelemetry"], [159.295, "04  OpenTelemetry"], [172.105, "05  What to watch"], [203.203, "06  The tools"], [233.605, ""]];
+      const tl = gsap.timeline({ paused: true });
+
+      // chapter labels: one element per chapter run, faded at its boundaries
+      const wrap = document.getElementById("chapter-wrap");
+      const runs = [];
+      CHAPTERS.forEach(([t, label], i) => {
+        const end = i + 1 < CHAPTERS.length ? CHAPTERS[i + 1][0] : TOTAL;
+        const last = runs[runs.length - 1];
+        if (last && last.label === label) last.end = end;
+        else runs.push({ label, start: t, end });
+      });
+      runs.forEach((r, i) => {
+        if (!r.label) return;
+        const el = document.createElement("div");
+        el.className = "chapter";
+        el.textContent = r.label;
+        el.style.opacity = 0;
+        wrap.appendChild(el);
+        tl.fromTo(el, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, r.start + 0.3);
+        tl.to(el, { opacity: 0, duration: 0.4, ease: "power1.in" }, r.end - 0.45);
+      });
+
+      // chrome is hidden during the cold open and the close
+      const s2 = CHAPTERS[1][0], s11 = CHAPTERS[CHAPTERS.length - 1][0];
+      tl.fromTo(["#brand", "#progress"], { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "power2.out" }, s2 + 0.2);
+      tl.to(["#brand", "#progress"], { opacity: 0, duration: 0.6 }, s11 - 0.5);
+      tl.fromTo("#progress-fill", { scaleX: 0 }, { scaleX: 1, duration: TOTAL, ease: "none" }, 0);
+
+      // ambient background motion
+      tl.fromTo("#bg-grid", { x: 0, y: 0 }, { x: 80, y: 80, duration: TOTAL, ease: "none" }, 0);
+      tl.fromTo("#glow-a", { x: 0, y: 0, scale: 1 }, { x: 520, y: 260, scale: 1.25, duration: TOTAL / 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0);
+      tl.fromTo("#glow-b", { x: 0, y: 0, scale: 1.1 }, { x: -440, y: -180, scale: 0.9, duration: TOTAL / 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0);
+      tl.fromTo("#grain", { backgroundPosition: "0px 0px" }, { backgroundPosition: "240px 480px", duration: TOTAL, ease: "steps(" + Math.round(TOTAL * 12) + ")" }, 0);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

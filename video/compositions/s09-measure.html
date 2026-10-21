@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        .q-stage { position: absolute; inset: 0; }
+        .q-head { position: absolute; left: 120px; top: 150px; }
+        .q-head .display { font-size: 84px; margin-top: 16px; }
+        .q-tiles { position: absolute; left: 120px; right: 120px; top: 360px; height: 520px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; }
+        .q-tile { padding: 30px 30px; display: flex; flex-direction: column; gap: 22px; }
+        .q-tile .num { font: 700 20px var(--mono); color: var(--amber); letter-spacing: 0.14em; }
+        .q-tile .name { font-family: var(--serif); font-size: 64px; line-height: 1; }
+        .q-tile .row { display: flex; justify-content: space-between; font: 400 23px var(--mono); color: var(--muted); padding-top: 14px; border-top: 2px solid var(--line); }
+        .q-tile .row b { font-weight: 400; color: var(--fg); }
+        .q-hist { display: flex; align-items: flex-end; gap: 8px; height: 110px; margin-top: 40px; position: relative; }
+        .q-hist i { flex: 1; background: rgba(123, 143, 245, 0.55); border-radius: 4px 4px 0 0; display: block; transform-origin: bottom center; }
+        .q-mark { position: absolute; bottom: -10px; width: 3px; top: -14px; display: block; }
+        .q-mark.avg { left: 30%; background: var(--muted); }
+        .q-mark.p95 { left: 86%; background: var(--amber); }
+        .q-mk { position: absolute; top: -44px; font: 700 18px var(--mono); white-space: nowrap; }
+        .q-mk.avg { left: 22%; color: var(--muted); }
+        .q-mk.p95 { left: 78%; color: var(--amber); }
+        .q-errs { display: flex; flex-direction: column; gap: 12px; }
+        .q-errs .chip { font-size: 21px; padding: 10px 16px; }
+        .q-bars { display: flex; flex-direction: column; gap: 16px; }
+        .q-bar { display: flex; flex-direction: column; gap: 6px; font: 400 21px var(--mono); color: var(--muted); }
+        .q-bar span.b { height: 14px; border-radius: 4px; background: var(--amber); transform-origin: left center; display: block; }
+        .q-thumbs { display: flex; gap: 16px; }
+        .q-thumbs .chip { font-size: 24px; }
+        .q-trace { position: absolute; left: 120px; right: 120px; top: 360px; padding: 30px 36px; display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
+        .q-trace .id { font: 400 26px var(--mono); color: var(--muted); }
+        .q-trace .nm { font: 400 28px var(--mono); color: var(--fg); margin-right: auto; }
+        .q-cmp { position: absolute; left: 120px; right: 120px; top: 540px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+        .q-cell { padding: 28px 32px; display: flex; flex-direction: column; gap: 14px; }
+        .q-cell .t { font: 700 19px var(--mono); letter-spacing: 0.14em; color: var(--muted); }
+        .q-cell .v { font-family: var(--serif); font-size: 72px; line-height: 1; display: flex; align-items: baseline; gap: 22px; }
+        .q-cell .from { color: var(--dim); font-size: 48px; }
+        .q-cell .bad { color: var(--err); }
+        .q-cell .same { color: var(--fg); }
+        .q-ask { position: absolute; left: 120px; right: 120px; top: 800px; }
+        .q-ask .display { font-size: 76px; }
+      </style>
+      <div id="root" data-composition-id="s09-measure" data-width="1920" data-height="1080">
+        <div class="q-stage">
+          <div class="q-head">
+            <div class="kicker">What to watch</div>
+            <div class="display">Four signals, tagged with context</div>
+          </div>
+          <div class="q-tiles">
+            <div class="panel q-tile qt1">
+              <span class="num">01</span><span class="name">Latency</span>
+              <div class="q-hist"><i style="height:40%"></i><i style="height:78%"></i><i style="height:100%"></i><i style="height:84%"></i><i style="height:60%"></i><i style="height:42%"></i><i style="height:30%"></i><i style="height:20%"></i><i style="height:14%"></i><i style="height:9%"></i><span class="q-mark avg"></span><span class="q-mark p95"></span><span class="q-mk avg">avg</span><span class="q-mk p95">p95</span></div>
+              <div class="row qr-ttft"><span>time to first token</span><b>420 ms</b></div>
+            </div>
+            <div class="panel q-tile qt2">
+              <span class="num">02</span><span class="name">Errors</span>
+              <div class="q-errs"><span class="chip qe1"><span class="led err"></span>429 rate limit</span><span class="chip qe2"><span class="led err"></span>timeout</span><span class="chip qe3"><span class="led err"></span>tool failed</span></div>
+            </div>
+            <div class="panel q-tile qt3">
+              <span class="num">03</span><span class="name">Tokens + cost</span>
+              <div class="q-bars">
+                <div class="q-bar qb1">per request<span class="b" style="width:42%"></span></div>
+                <div class="q-bar qb2">per user<span class="b" style="width:70%"></span></div>
+                <div class="q-bar qb3">per feature<span class="b" style="width:92%"></span></div>
+              </div>
+            </div>
+            <div class="panel q-tile qt4">
+              <span class="num">04</span><span class="name">Quality</span>
+              <div class="q-thumbs"><span class="chip qf1"><span class="led ok"></span>helpful 812</span><span class="chip qf2"><span class="led err"></span>not 47</span></div>
+              <div class="row qr-judge"><span>LLM judge score</span><b>0.86</b></div>
+            </div>
+          </div>
+
+          <div class="panel q-trace">
+            <span class="id">4bf92f35</span><span class="nm">answer_question · 3.9s</span>
+            <span class="chip qg1">user: u_42</span><span class="chip qg2">session: s_9f2c</span><span class="chip qg3"><span class="led warn"></span>prompt: v3</span>
+          </div>
+          <div class="q-cmp">
+            <div class="panel q-cell"><span class="t">QUALITY · PROMPT V2 → V3</span><span class="v"><span class="from">0.86</span><span class="bad">0.71 ↓</span></span></div>
+            <div class="panel q-cell"><span class="t">P95 LATENCY</span><span class="v"><span class="from">2.9s</span><span class="same">3.0s</span></span></div>
+            <div class="panel q-cell"><span class="t">COST / REQUEST</span><span class="v"><span class="from">$0.002</span><span class="bad">$0.004 ↑</span></span></div>
+          </div>
+          <div class="q-ask"><div class="display">Did yesterday's change make things <em>worse?</em></div></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const D = 31.1;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(".q-head > *", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "power3.out" }, 0.1);
+          tl.fromTo(".q-tile", { opacity: 0, y: 40 }, { opacity: 0.3, y: 0, duration: 0.5, stagger: 0.1, ease: "expo.out" }, 0.8);
+          const on = (sel, at) => tl.to(sel, { opacity: 1, borderColor: "#f5a800", duration: 0.35, ease: "power2.out" }, at);
+          const off = (sel, at) => tl.to(sel, { borderColor: "#273352", duration: 0.35 }, at);
+          // latency
+          on(".qt1", 1.9);
+          tl.fromTo(".q-hist i", { scaleY: 0 }, { scaleY: 1, duration: 0.5, stagger: 0.04, ease: "power3.out" }, 2.0);
+          tl.fromTo([".q-mark.avg", ".q-mk.avg"], { opacity: 0 }, { opacity: 1, duration: 0.3 }, 3.2);
+          tl.fromTo([".q-mark.p95", ".q-mk.p95"], { opacity: 0 }, { opacity: 1, duration: 0.3 }, 3.9);
+          tl.fromTo(".qr-ttft", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35 }, 5.5);
+          off(".qt1", 9.2);
+          // errors
+          on(".qt2", 9.4);
+          tl.fromTo(".qe1", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.3 }, 10.0);
+          tl.fromTo(".qe2", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.3 }, 11.0);
+          tl.fromTo(".qe3", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.3 }, 12.0);
+          off(".qt2", 13.0);
+          // tokens and cost
+          on(".qt3", 13.1);
+          tl.fromTo(".qb1 .b", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 14.3);
+          tl.fromTo(".qb2 .b", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 15.1);
+          tl.fromTo(".qb3 .b", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 16.0);
+          off(".qt3", 17.0);
+          // quality
+          on(".qt4", 17.2);
+          tl.fromTo([".qf1", ".qf2"], { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, stagger: 0.15, ease: "back.out(2.4)" }, 18.2);
+          tl.fromTo(".qr-judge", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35 }, 19.3);
+          // tag everything
+          tl.to([".q-tiles", ".q-head"], { opacity: 0, y: -30, duration: 0.45, ease: "power2.in" }, 20.9);
+          tl.fromTo(".q-trace", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 21.3);
+          tl.fromTo(".qg1", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(2)" }, 22.6);
+          tl.fromTo(".qg2", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(2)" }, 23.5);
+          tl.fromTo(".qg3", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(2)" }, 24.4);
+          // after every release
+          tl.fromTo(".q-cell", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.15, ease: "power3.out" }, 25.6);
+          tl.fromTo(".q-ask .display", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 28.3);
+          tl.to(".q-stage", { opacity: 0, duration: 0.4, ease: "power1.in" }, D - 0.42);
+          window.__timelines["s09-measure"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

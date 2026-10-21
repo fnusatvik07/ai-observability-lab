@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        .z-stage { position: absolute; inset: 0; }
+        .z-head { position: absolute; left: 120px; top: 150px; }
+        .z-head .display { font-size: 84px; margin-top: 16px; }
+        .z-groups { position: absolute; left: 120px; right: 120px; top: 360px; display: grid; grid-template-columns: 3fr 2fr; gap: 24px; }
+        .z-glabel { font: 700 20px var(--mono); letter-spacing: 0.18em; color: var(--muted); margin-bottom: 18px; }
+        .z-row { display: grid; gap: 24px; }
+        .z-row.three { grid-template-columns: repeat(3, 1fr); }
+        .z-row.two { grid-template-columns: repeat(2, 1fr); }
+        .z-card { height: 380px; padding: 30px 28px; display: flex; flex-direction: column; gap: 18px; position: relative; }
+        .z-card img { width: 76px; height: 76px; object-fit: contain; display: block; }
+        .z-card .nm { font-family: var(--serif); font-size: 58px; line-height: 1; }
+        .z-card .ds { font: 400 21px/1.45 var(--mono); color: var(--muted); }
+        .z-term { position: absolute; left: 28px; bottom: 28px; font-size: 22px; padding: 10px 18px; border-color: var(--indigo); }
+        .z-cmd { position: absolute; left: 28px; bottom: 28px; font-size: 20px; padding: 10px 16px; color: var(--ok); }
+        .z-found { position: absolute; left: 120px; right: 120px; top: 830px; height: 130px; display: flex; align-items: center; justify-content: center; gap: 34px; border-color: var(--amber); background: rgba(245, 168, 0, 0.08); }
+        .z-found img { height: 74px; display: block; }
+        .z-found .lede { font-size: 24px; color: var(--muted); }
+      </style>
+      <div id="root" data-composition-id="s10-tools" data-width="1920" data-height="1080">
+        <div class="z-stage">
+          <div class="z-head">
+            <div class="kicker">The tools</div>
+            <div class="display">You don't have to build it</div>
+          </div>
+          <div class="z-groups">
+            <div>
+              <div class="z-glabel zl1">LLM-NATIVE</div>
+              <div class="z-row three">
+                <div class="panel z-card zc1"><img src="assets/logos/langchain-color.svg" alt="" /><span class="nm">LangSmith</span><span class="ds">by LangChain. Tracing and evals.</span><span class="chip z-term zt1">run</span></div>
+                <div class="panel z-card zc2"><img src="assets/logos/langfuse-color.svg" alt="" /><span class="nm">Langfuse</span><span class="ds">Open source. Self-host anywhere.</span><span class="chip z-cmd">$ docker compose up</span><span class="chip z-term zt2">observation</span></div>
+                <div class="panel z-card zc3"><img src="assets/logos/phoenix-color.svg" alt="" /><span class="nm">Phoenix</span><span class="ds">by Arize. Open source.</span></div>
+              </div>
+            </div>
+            <div>
+              <div class="z-glabel zl2">APM PLATFORMS</div>
+              <div class="z-row two">
+                <div class="panel z-card zc4"><img src="assets/logos/datadog-color.svg" alt="" /><span class="nm">Datadog</span><span class="ds">LLM Observability next to your infra.</span><span class="chip z-term zt3">span</span></div>
+                <div class="panel z-card zc5"><img src="assets/logos/dynatrace-color.svg" alt="" /><span class="nm">Dynatrace</span><span class="ds">AI Observability on top of APM.</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel z-found">
+            <span class="lede">built on</span>
+            <img src="assets/logos/otel-horizontal-white.svg" alt="OpenTelemetry" />
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const D = 30.4;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(".z-head > *", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "power3.out" }, 0.1);
+          const card = (sel, at) => tl.fromTo(sel, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, at);
+          tl.fromTo(".zl1", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 3.3);
+          card(".zc1", 3.5);
+          card(".zc2", 4.0);
+          tl.to(".zc2", { borderColor: "#f5a800", duration: 0.3 }, 7.5);
+          tl.fromTo(".z-cmd", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(2)" }, 8.6);
+          tl.to(".zc2", { borderColor: "#273352", duration: 0.3 }, 11.0);
+          card(".zc3", 11.1);
+          tl.fromTo(".zl2", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 13.8);
+          card(".zc4", 13.9);
+          card(".zc5", 14.4);
+          // different words
+          tl.to(".z-cmd", { opacity: 0, duration: 0.3 }, 18.7);
+          tl.fromTo(".zt1", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.6)" }, 20.3);
+          tl.fromTo(".zt2", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.6)" }, 21.3);
+          tl.fromTo(".zt3", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.6)" }, 21.8);
+          // same ideas
+          tl.to([".zt1", ".zt2", ".zt3"], { backgroundColor: "rgba(123, 143, 245, 0.25)", duration: 0.3, stagger: 0.08 }, 23.3);
+          tl.to([".zt1", ".zt2", ".zt3"], { y: -6, duration: 0.2, yoyo: true, repeat: 1, stagger: 0.08, ease: "power1.inOut" }, 23.4);
+          // foundation underneath: OpenTelemetry
+          tl.to(".z-groups", { y: -30, duration: 0.8, ease: "power2.inOut" }, 25.4);
+          tl.to(".z-head", { opacity: 0.25, duration: 0.6 }, 25.4);
+          tl.fromTo(".z-found", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, 27.3);
+          tl.fromTo(".z-found img", { opacity: 0.25, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.6)" }, 28.7);
+          tl.to(".z-stage", { opacity: 0, duration: 0.4, ease: "power1.in" }, D - 0.42);
+          window.__timelines["s10-tools"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

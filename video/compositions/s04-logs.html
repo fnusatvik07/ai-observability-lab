@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        .l-stage { position: absolute; inset: 0; }
+        .l-big { position: absolute; left: 120px; right: 120px; top: 300px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+        .l-big .cell { display: flex; flex-direction: column; gap: 18px; border-top: 3px solid var(--line); padding-top: 26px; }
+        .l-big .num { font: 700 24px var(--mono); color: var(--amber); }
+        .l-big .display { font-size: 112px; }
+        .l-big .sub { font: 400 24px var(--mono); color: var(--muted); }
+        .sig-tabs { position: absolute; left: 120px; right: 120px; top: 130px; display: flex; gap: 56px; border-bottom: 2px solid var(--line); }
+        .sig-tab { font: 700 24px var(--mono); letter-spacing: 0.18em; color: var(--dim); padding-bottom: 20px; position: relative; }
+        .sig-tab .bar { position: absolute; left: 0; right: 0; bottom: -2px; height: 4px; background: var(--amber); transform-origin: left center; display: block; }
+        .l-agent { position: absolute; left: 120px; right: 120px; top: 360px; display: grid; grid-template-columns: 1.25fr 1fr; gap: 50px; align-items: center; }
+        .l-code { padding: 40px 46px; font: 400 29px/1.75 var(--mono); white-space: pre; }
+        .l-q { display: flex; flex-direction: column; gap: 24px; }
+        .l-q .display { font-size: 72px; }
+        .l-term { position: absolute; left: 120px; right: 120px; top: 250px; height: 640px; overflow: hidden; }
+        .l-term-head { display: flex; gap: 12px; padding: 22px 30px; border-bottom: 2px solid var(--line); }
+        .l-term-head i { width: 16px; height: 16px; border-radius: 50%; background: var(--line); display: block; }
+        .l-term-head span { font: 400 22px var(--mono); color: var(--muted); margin-left: 16px; }
+        .l-lines { padding: 26px 34px; display: flex; flex-direction: column; gap: 12px; font: 400 27px var(--mono); }
+        .l-line { white-space: nowrap; color: var(--fg); }
+        .l-line .ts { color: var(--dim); }
+        .l-line .info { color: var(--ok); }
+        .l-line .warn { color: var(--amber); }
+        .l-line .err { color: var(--err); }
+        .l-line .rid { color: var(--indigo); }
+        .l-flood { position: absolute; left: 34px; right: 34px; top: 330px; display: flex; flex-direction: column; gap: 10px; font: 400 25px var(--mono); }
+        .l-ask { position: absolute; right: 60px; bottom: 50px; }
+      </style>
+      <div id="root" data-composition-id="s04-logs" data-width="1920" data-height="1080">
+        <div class="sig-tabs l-tabs">
+          <div class="sig-tab t1">01 LOGS<span class="bar"></span></div>
+          <div class="sig-tab t2">02 METRICS</div>
+          <div class="sig-tab t3">03 TRACES</div>
+          <div class="sig-tab t4">04 SPANS</div>
+        </div>
+        <div class="l-stage">
+          <div class="l-big">
+            <div class="cell"><span class="num">01</span><span class="display">Logs</span><span class="sub">what happened</span></div>
+            <div class="cell"><span class="num">02</span><span class="display">Metrics</span><span class="sub">how much, how often</span></div>
+            <div class="cell"><span class="num">03</span><span class="display">Traces</span><span class="sub">one request's journey</span></div>
+            <div class="cell"><span class="num">04</span><span class="display">Spans</span><span class="sub">each step inside it</span></div>
+          </div>
+
+          <div class="l-agent">
+            <div class="panel l-code"><span class="k">def</span> answer_question(question):
+    docs    = search_docs(question)  <span class="c"># retrieval</span>
+    weather = get_weather(<span class="s">"Paris"</span>)  <span class="c"># tool</span>
+    <span class="k">return</span> call_llm(question, docs, weather)</div>
+            <div class="l-q">
+              <div class="kicker">One small agent</div>
+              <div class="display">"What's the weather in Paris, and do I need an <em>umbrella</em>?"</div>
+            </div>
+          </div>
+
+          <div class="panel l-term">
+            <div class="l-term-head"><i></i><i></i><i></i><span>agent.log</span></div>
+            <div class="l-lines">
+              <div class="l-line a1"><span class="ts">19:02:11.204</span>  <span class="info">INFO </span> request received  <span class="rid">user=u_42</span></div>
+              <div class="l-line a2"><span class="ts">19:02:11.512</span>  <span class="info">INFO </span> search_docs returned 3 documents</div>
+              <div class="l-line a3"><span class="ts">19:02:12.130</span>  <span class="warn">WARN </span> get_weather timed out, retrying (1/3)</div>
+              <div class="l-line a4"><span class="ts">19:02:13.544</span>  <span class="info">INFO </span> get_weather ok  city=Paris rain=70%</div>
+            </div>
+            <div class="l-flood">
+              <div class="l-line"><span class="ts">19:02:13.601</span>  <span class="info">INFO </span> request received  <span class="rid">user=u_17</span></div>
+              <div class="l-line"><span class="ts">19:02:13.602</span>  <span class="warn">WARN </span> get_weather timed out, retrying (2/3)</div>
+              <div class="l-line"><span class="ts">19:02:13.611</span>  <span class="info">INFO </span> llm call model=gpt-4o-mini tokens=812</div>
+              <div class="l-line"><span class="ts">19:02:13.640</span>  <span class="info">INFO </span> request received  <span class="rid">user=u_88</span></div>
+              <div class="l-line"><span class="ts">19:02:13.655</span>  <span class="err">ERROR</span> answer failed: JSON parse error</div>
+              <div class="l-line"><span class="ts">19:02:13.702</span>  <span class="info">INFO </span> search_docs returned 0 documents</div>
+              <div class="l-line"><span class="ts">19:02:13.731</span>  <span class="info">INFO </span> llm call model=gpt-4o-mini tokens=1,204</div>
+              <div class="l-line"><span class="ts">19:02:13.760</span>  <span class="warn">WARN </span> rate limited (429), backing off</div>
+              <div class="l-line"><span class="ts">19:02:13.790</span>  <span class="info">INFO </span> request received  <span class="rid">user=u_42</span></div>
+              <div class="l-line"><span class="ts">19:02:13.812</span>  <span class="info">INFO </span> get_weather ok  city=Lyon rain=10%</div>
+            </div>
+            <div class="chip l-ask"><span class="led err"></span>Which lines belong to which request?</div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const D = 20.3;
+          const tl = gsap.timeline({ paused: true });
+          // four ideas
+          tl.fromTo(".l-big .cell", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.18, ease: "expo.out" }, 1.4);
+          tl.to(".l-big", { opacity: 0, y: -60, duration: 0.5, ease: "power2.in" }, 3.1);
+          tl.fromTo(".sig-tab", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.06, ease: "power2.out" }, 3.4);
+          // one small agent
+          tl.fromTo(".l-code", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 3.6);
+          tl.fromTo(".l-q .kicker", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 4.2);
+          tl.fromTo(".l-q .display", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, 5.9);
+          // logs
+          tl.to(".l-agent", { opacity: 0, y: -30, duration: 0.4, ease: "power2.in" }, 9.0);
+          tl.to(".l-tabs .t1", { color: "#eeeae0", duration: 0.3 }, 9.4);
+          tl.fromTo(".l-tabs .bar", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 9.4);
+          tl.fromTo(".l-term", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 9.6);
+          tl.fromTo(".a1", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3 }, 11.3);
+          tl.fromTo(".a2", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3 }, 12.0);
+          tl.fromTo(".a3", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3 }, 12.8);
+          tl.fromTo(".a4", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3 }, 14.3);
+          // thousands of users: the flood
+          tl.fromTo(".l-flood .l-line", { opacity: 0 }, { opacity: 1, duration: 0.12, stagger: 0.14 }, 15.4);
+          tl.fromTo(".l-flood", { y: 0 }, { y: -40, duration: 4, ease: "none" }, 15.4);
+          tl.to(".l-lines", { opacity: 0.35, duration: 0.6 }, 15.6);
+          tl.fromTo(".l-ask", { opacity: 0, y: 20, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(2)" }, 18.2);
+          tl.to(".l-stage", { opacity: 0, duration: 0.4, ease: "power1.in" }, D - 0.42);
+          window.__timelines["s04-logs"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

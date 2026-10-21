@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        .g-stage { position: absolute; inset: 0; }
+        .g-head { position: absolute; left: 120px; top: 150px; }
+        .g-head .display { font-size: 84px; margin-top: 16px; }
+        .g-card { position: absolute; left: 120px; top: 380px; width: 1060px; padding: 36px 44px; font: 400 29px/1.8 var(--mono); }
+        .g-line { position: relative; white-space: pre; display: block; }
+        .g-hl { position: absolute; left: -16px; right: -16px; top: 2px; bottom: 2px; border-radius: 10px; background: rgba(245, 168, 0, 0.16); border: 2px solid rgba(245, 168, 0, 0.7); display: block; }
+        .g-tools { position: absolute; left: 1260px; right: 120px; top: 380px; display: flex; flex-direction: column; gap: 24px; }
+        .g-tool { padding: 24px 28px; display: flex; flex-direction: column; gap: 12px; }
+        .g-tool .h { display: flex; align-items: center; gap: 16px; font: 700 26px var(--mono); }
+        .g-tool .h img { width: 40px; height: 40px; object-fit: contain; display: block; }
+        .g-tool .r { font: 400 22px var(--mono); color: var(--muted); }
+        .g-tool .r b { color: var(--fg); font-weight: 400; }
+        .g-final { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+        .g-final .display { font-size: 150px; }
+      </style>
+      <div id="root" data-composition-id="s08-semconv" data-width="1920" data-height="1080">
+        <div class="g-stage">
+          <div class="g-body">
+            <div class="g-head">
+              <div class="kicker">GenAI semantic conventions</div>
+              <div class="display">Shared names for AI telemetry</div>
+            </div>
+            <div class="panel g-card">
+<span class="g-line">{</span>
+<span class="g-line">  <span class="k">"gen_ai.operation.name"</span>: <span class="s">"chat"</span>,</span>
+<span class="g-line">  <span class="k">"gen_ai.provider.name"</span>: <span class="s">"openai"</span>,</span>
+<span class="g-line gl-model">  <span class="k">"gen_ai.request.model"</span>: <span class="s">"gpt-4o-mini"</span>,<span class="g-hl h1"></span></span>
+<span class="g-line gl-tok">  <span class="k">"gen_ai.usage.input_tokens"</span>: <span class="n">640</span>,<span class="g-hl h2"></span></span>
+<span class="g-line">  <span class="k">"gen_ai.usage.output_tokens"</span>: <span class="n">172</span>,</span>
+<span class="g-line">  <span class="k">"gen_ai.response.finish_reasons"</span>: [<span class="s">"stop"</span>]</span>
+<span class="g-line">}</span>
+            </div>
+            <div class="g-tools">
+              <div class="panel g-tool"><div class="h"><img src="assets/logos/langfuse-color.svg" alt="" />Langfuse</div><div class="r">model <b>gpt-4o-mini</b> · <b>640</b> tokens in</div></div>
+              <div class="panel g-tool"><div class="h"><img src="assets/logos/langchain-color.svg" alt="" />LangSmith</div><div class="r">model <b>gpt-4o-mini</b> · <b>640</b> tokens in</div></div>
+              <div class="panel g-tool"><div class="h"><img src="assets/logos/datadog-color.svg" alt="" />Datadog</div><div class="r">model <b>gpt-4o-mini</b> · <b>640</b> tokens in</div></div>
+            </div>
+          </div>
+          <div class="g-final">
+            <div class="display g-f1">Instrument once.</div>
+            <div class="display g-f2"><em>Send it anywhere.</em></div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const D = 15.31;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(".g-head > *", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "power3.out" }, 0.1);
+          tl.fromTo(".g-card", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 2.4);
+          tl.fromTo(".g-line", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.25, stagger: 0.08, ease: "power2.out" }, 2.6);
+          tl.fromTo(".h1", { opacity: 0, scaleX: 0.9 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power2.out" }, 5.9);
+          tl.fromTo(".h2", { opacity: 0, scaleX: 0.9 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "power2.out" }, 8.0);
+          // every tool reads your data the same way
+          tl.fromTo(".g-tool", { opacity: 0, x: 50 }, { opacity: 1, x: 0, duration: 0.5, stagger: 0.18, ease: "expo.out" }, 10.4);
+          // instrument once, send it anywhere
+          tl.to(".g-body", { opacity: 0, scale: 0.97, filter: "blur(6px)", duration: 0.45, ease: "power2.in" }, 12.8);
+          tl.fromTo(".g-f1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 13.2);
+          tl.fromTo(".g-f2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 14.1);
+          tl.to(".g-stage", { opacity: 0, duration: 0.35, ease: "power1.in" }, D - 0.38);
+          window.__timelines["s08-semconv"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

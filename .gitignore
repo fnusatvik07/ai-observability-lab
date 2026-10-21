@@ -1,0 +1,14 @@
+# secrets
+.env
+langfuse/.env
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# os / editors
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        .w-stage { position: absolute; inset: 0; }
+        .w-head { position: absolute; left: 120px; top: 150px; }
+        .w-head .display { font-size: 84px; margin-top: 18px; }
+        .w-list { position: absolute; left: 120px; top: 410px; width: 640px; display: flex; flex-direction: column; gap: 44px; }
+        .w-item { display: flex; gap: 30px; align-items: baseline; }
+        .w-num { font: 700 28px var(--mono); color: var(--amber); width: 56px; }
+        .w-name { font-family: var(--serif); font-size: 64px; line-height: 1.05; color: var(--fg); }
+        .w-desc { font: 400 24px var(--mono); color: var(--muted); margin-top: 10px; }
+        .w-right { position: absolute; left: 860px; right: 120px; top: 200px; bottom: 140px; }
+        .w-vis { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 26px; }
+        .w-prompt { align-self: flex-start; }
+        .w-ans { padding: 26px 32px; font: 400 32px var(--mono); display: flex; justify-content: space-between; align-items: center; }
+        .w-ans .run { font: 400 22px var(--mono); color: var(--dim); }
+        .w-ans.bad { border-color: rgba(242, 89, 75, 0.6); }
+        .w-chain { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px 26px; }
+        .w-node { padding: 26px 26px; border-radius: 18px; border: 3px solid var(--line); background: var(--surface); display: flex; flex-direction: column; gap: 10px; }
+        .w-node .t { font: 700 20px var(--mono); letter-spacing: 0.14em; color: var(--muted); }
+        .w-node .v { font: 400 30px var(--mono); color: var(--fg); }
+        .w-final { padding: 30px 34px; font: 400 32px var(--mono); display: flex; align-items: center; gap: 18px; }
+        .w-meter { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+        .w-stat { padding: 34px 38px; }
+        .w-stat .t { font: 700 20px var(--mono); letter-spacing: 0.16em; color: var(--muted); }
+        .w-stat .v { font-family: var(--serif); font-size: 120px; line-height: 1.1; color: var(--fg); margin-top: 8px; }
+        .w-cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+        .w-cmp .panel { padding: 30px 34px; display: flex; flex-direction: column; gap: 16px; }
+        .w-cmp .t { font: 400 26px var(--mono); color: var(--muted); }
+        .w-cmp .v { font-family: var(--serif); font-size: 84px; line-height: 1; }
+        .w-cmp .slow { color: var(--indigo); }
+        .w-cmp .exp { color: var(--amber); }
+      </style>
+      <div id="root" data-composition-id="s03-different" data-width="1920" data-height="1080">
+        <div class="w-stage">
+          <div class="w-head">
+            <div class="kicker">Why AI is different</div>
+            <div class="display">Three old rules, broken</div>
+          </div>
+          <div class="w-list">
+            <div class="w-item w-i1"><span class="w-num">01</span><div><div class="w-name">Non-deterministic</div><div class="w-desc">Same input, different output</div></div></div>
+            <div class="w-item w-i2"><span class="w-num">02</span><div><div class="w-name">Chains of decisions</div><div class="w-desc">Every step can fail</div></div></div>
+            <div class="w-item w-i3"><span class="w-num">03</span><div><div class="w-name">Cost per request</div><div class="w-desc">Measured in tokens</div></div></div>
+          </div>
+
+          <div class="w-right">
+            <div class="w-vis w-v1">
+              <div class="chip w-prompt"><span class="led warn"></span>"What's your refund window?"</div>
+              <div class="panel w-ans"><span>Within 30 days of purchase.</span><span class="run">run 1</span></div>
+              <div class="panel w-ans"><span>You have one month to ask.</span><span class="run">run 2</span></div>
+              <div class="panel w-ans bad"><span>Refunds are available anytime.</span><span class="run">run 3</span></div>
+            </div>
+
+            <div class="w-vis w-v2">
+              <div class="w-chain">
+                <div class="w-node n1"><span class="t">STEP 1 · LLM</span><span class="v">plan</span></div>
+                <div class="w-node n2"><span class="t">STEP 2 · RETRIEVAL</span><span class="v">search docs</span></div>
+                <div class="w-node n3"><span class="t">STEP 3 · TOOL</span><span class="v">get_order</span></div>
+                <div class="w-node n4"><span class="t">STEP 4 · TOOL</span><span class="v">get_policy</span></div>
+                <div class="w-node n5"><span class="t">STEP 5 · LLM</span><span class="v">reason</span></div>
+                <div class="w-node n6"><span class="t">STEP 6 · LLM</span><span class="v">answer</span></div>
+              </div>
+              <div class="panel w-final"><span class="led ok w-fled" style="width:16px;height:16px;border-radius:50%;display:block"></span><span class="w-ftext">Final answer</span></div>
+            </div>
+
+            <div class="w-vis w-v3">
+              <div class="w-meter">
+                <div class="panel w-stat"><div class="t">TOKENS THIS REQUEST</div><div class="v w-tok">0</div></div>
+                <div class="panel w-stat"><div class="t">COST THIS REQUEST</div><div class="v w-usd">$0.000</div></div>
+              </div>
+              <div class="w-cmp">
+                <div class="panel w-c1"><span class="t">Bug in a normal app</span><span class="v slow">slow</span></div>
+                <div class="panel w-c2"><span class="t">Bug in an agent</span><span class="v exp">expensive</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const D = 26.85;
+          const tl = gsap.timeline({ paused: true });
+          const items = [".w-i1", ".w-i2", ".w-i3"];
+          const focus = (i, at) => items.forEach((sel, j) => tl.to(sel, { opacity: j === i ? 1 : 0.28, duration: 0.4, ease: "power2.out" }, at));
+
+          tl.fromTo(".w-head > *", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "power3.out" }, 0);
+          tl.fromTo(".w-item", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, stagger: 0.15, ease: "expo.out" }, 2.4);
+
+          // 01 non-deterministic
+          focus(0, 3.5);
+          tl.fromTo(".w-v1 .w-prompt", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.6);
+          tl.fromTo(".w-v1 .w-ans", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.45, stagger: 0.55, ease: "back.out(1.4)" }, 5.6);
+          tl.to(".w-v1", { opacity: 0, y: -30, duration: 0.4, ease: "power2.in" }, 8.1);
+
+          // 02 chains of decisions
+          focus(1, 8.5);
+          tl.fromTo(".w-node", { opacity: 0, y: 24 }, { opacity: 0.45, y: 0, duration: 0.4, stagger: 0.07, ease: "power2.out" }, 8.8);
+          tl.fromTo(".w-final", { opacity: 0 }, { opacity: 0.45, duration: 0.4 }, 9.4);
+          const lit = { borderColor: "#7b8ff5", opacity: 1, duration: 0.3, ease: "power2.out" };
+          tl.to(".n1", lit, 11.9);
+          tl.to(".n2", lit, 12.7);
+          tl.to([".n3", ".n4"], { ...lit, stagger: 0.25 }, 13.8);
+          tl.to([".n5", ".n6"], { ...lit, stagger: 0.3 }, 14.9);
+          tl.to(".w-final", { opacity: 1, duration: 0.3 }, 15.8);
+          // a mistake at any step ruins the final answer
+          tl.to(".n2", { borderColor: "#f2594b", backgroundColor: "rgba(242, 89, 75, 0.14)", duration: 0.3 }, 16.8);
+          tl.to([".n3", ".n4", ".n5", ".n6"], { borderColor: "rgba(242, 89, 75, 0.55)", duration: 0.25, stagger: 0.18 }, 17.2);
+          tl.to(".w-final", { borderColor: "#f2594b", backgroundColor: "rgba(242, 89, 75, 0.12)", duration: 0.3 }, 18.2);
+          tl.to(".w-fled", { backgroundColor: "#f2594b", duration: 0.2 }, 18.2);
+          tl.to(".w-v2", { opacity: 0, y: -30, duration: 0.4, ease: "power2.in" }, 18.7);
+
+          // 03 cost per request
+          focus(2, 19.1);
+          tl.fromTo(".w-stat", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: "power3.out" }, 19.4);
+          const tok = document.querySelector(".w-tok"), usd = document.querySelector(".w-usd");
+          const c = { t: 0 };
+          tl.fromTo(c, { t: 0 }, {
+            t: 1, duration: 2.6, ease: "power2.out",
+            onUpdate: () => {
+              tok.textContent = Math.round(c.t * 18420).toLocaleString("en-US");
+              usd.textContent = "$" + (c.t * 0.0276).toFixed(3);
+            },
+          }, 19.8);
+          tl.fromTo(".w-c1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 22.5);
+          tl.fromTo(".w-c2", { opacity: 0, y: 30, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "back.out(1.8)" }, 25.0);
+          tl.to(".w-c2", { borderColor: "#f5a800", duration: 0.3 }, 25.6);
+
+          tl.set([".w-v2", ".w-v3"], { opacity: 0 }, 0);
+          tl.set(".w-v2", { opacity: 1, y: 0 }, 8.6);
+          tl.set(".w-v3", { opacity: 1 }, 19.2);
+          tl.to(".w-stage", { opacity: 0, duration: 0.4, ease: "power1.in" }, D - 0.42);
+          window.__timelines["s03-different"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

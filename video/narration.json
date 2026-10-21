@@ -1,0 +1,50 @@
+[
+  {
+    "id": "s01-hook",
+    "text": "Your AI agent just told a customer they can get a refund anytime. That's wrong. Your policy says thirty days. And yet, your dashboard is green. No errors. No crashes. Just a confident, wrong answer. So how do you find out why it happened? That's the job of AI observability."
+  },
+  {
+    "id": "s02-define",
+    "text": "Monitoring tells you whether something is broken. Observability tells you why. A system is observable when you can understand what's happening inside it, just from the data it emits. For traditional software, that's useful. For AI, it's essential."
+  },
+  {
+    "id": "s03-different",
+    "text": "Because AI breaks the old rules in three ways. First, it's non-deterministic. The same question can get a different answer every time. Second, agents are chains of decisions. One request might plan, search your documents, call two tools, and call the model three times. A mistake at any step ruins the final answer. And third, every request costs money, measured in tokens. A bug in a normal app makes it slow. A bug in an agent can make it expensive."
+  },
+  {
+    "id": "s04-logs",
+    "text": "Observability rests on four ideas. Let's follow one small agent. It answers: what's the weather in Paris, and do I need an umbrella? Logs are timestamped events. Request received. Weather tool timed out, retrying. Lots of detail. But with thousands of users, it's hard to tell which lines belong together."
+  },
+  {
+    "id": "s05-metrics",
+    "text": "Metrics are numbers over time. Requests per minute. Ninety-fifth percentile latency. Tokens used. Dollars spent today. They're perfect for dashboards and alerts. But they tell you that something changed, not which request changed."
+  },
+  {
+    "id": "s06-traces",
+    "text": "Traces connect it all. A trace follows one request from start to finish, under a single trace I D. And every step inside that trace is a span. The document search is a span. The weather tool is a span. The model call is a span, carrying the model name, input and output tokens, cost, and duration. Spans nest inside each other, so you see the whole tree."
+  },
+  {
+    "id": "s07-otel",
+    "text": "So how does that data leave your app? Through OpenTelemetry, or O Tel. It's an open, vendor-neutral standard. Your code creates spans with the O Tel S D K. They're batched in the background and shipped over a protocol called O T L P, either straight to a backend, or through a Collector that can filter, redact, and route them."
+  },
+  {
+    "id": "s08-semconv",
+    "text": "For AI, O Tel adds the Gen A I semantic conventions. Shared names, like gen A I dot request dot model, and gen A I dot usage dot input tokens, so every tool reads your data the same way. Instrument once. Send it anywhere."
+  },
+  {
+    "id": "s08b-code",
+    "text": "In practice, it takes a few lines. Wrap your model client, decorate the functions you care about, and every call becomes a span, with its inputs, outputs, tokens, and cost recorded for you."
+  },
+  {
+    "id": "s09-measure",
+    "text": "So what should you watch? Latency. Not the average, but the ninety-fifth percentile, and time to first token, which is what users actually feel. Errors, like rate limits, timeouts, and failed tools. Tokens and cost, per request, per user, and per feature. And quality, from user feedback or automated evaluations. Then tag everything with the user, the session, and the prompt version, so after every release you can answer one question. Did yesterday's change make things worse?"
+  },
+  {
+    "id": "s10-tools",
+    "text": "You don't have to build any of this yourself. LangSmith and Langfuse are built for L L M apps, and Langfuse is open source, so you can run it on your own laptop. Arize Phoenix is another open option. Datadog and Dynatrace put your AI traces right next to your infrastructure. They use different words: runs, observations, spans. But the ideas are the same. And more and more, so is the foundation underneath them: OpenTelemetry."
+  },
+  {
+    "id": "s11-close",
+    "text": "Back to that wrong refund answer. Open the trace, and you see it in seconds. The retrieval step pulled an outdated policy document. No guessing. That's AI observability. Every step, every token, every decision, visible."
+  }
+]

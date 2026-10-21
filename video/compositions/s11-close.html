@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        .x-stage { position: absolute; inset: 0; }
+        .x-body { position: absolute; inset: 0; }
+        .x-chat { position: absolute; left: 120px; top: 260px; width: 620px; padding: 36px 38px; display: flex; flex-direction: column; gap: 22px; }
+        .x-msg { padding: 22px 26px; border-radius: 22px; font: 400 27px/1.4 var(--mono); }
+        .x-user { align-self: flex-end; background: var(--surface-2); border: 2px solid var(--line); border-bottom-right-radius: 6px; }
+        .x-bot { background: rgba(242, 89, 75, 0.1); border: 2px solid rgba(242, 89, 75, 0.6); border-bottom-left-radius: 6px; }
+        .x-open { align-self: flex-start; border-color: var(--amber); color: var(--amber); }
+        .x-wf { position: absolute; left: 800px; right: 120px; top: 260px; padding: 34px 38px; }
+        .x-row { display: flex; align-items: center; gap: 20px; height: 84px; border-radius: 12px; padding: 0 16px; position: relative; }
+        .x-row .nm { width: 330px; font: 400 26px var(--mono); }
+        .x-row .ind { color: var(--dim); }
+        .x-track { position: relative; flex: 1; height: 40px; }
+        .x-track i { position: absolute; top: 0; height: 40px; border-radius: 8px; display: block; transform-origin: left center; }
+        .x-r0 i { left: 0; width: 100%; background: rgba(238, 234, 224, 0.2); border: 2px solid rgba(238, 234, 224, 0.5); }
+        .x-r1 i { left: 0; width: 24%; background: var(--ok); }
+        .x-r2 i { left: 26%; width: 70%; background: var(--indigo); }
+        .x-flag { position: absolute; inset: 0; border: 3px solid var(--err); border-radius: 12px; background: rgba(242, 89, 75, 0.1); display: block; }
+        .x-detail { margin-top: 26px; padding: 24px 28px; border-radius: 16px; border: 2px solid rgba(242, 89, 75, 0.6); background: rgba(242, 89, 75, 0.08); font: 400 25px/1.6 var(--mono); }
+        .x-detail .k2 { color: var(--muted); }
+        .x-detail .bad { color: var(--err); }
+        .x-no { position: absolute; left: 800px; top: 820px; }
+        .x-no .display { font-size: 92px; }
+        .x-end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; }
+        .x-end .display.t { font-size: 170px; }
+        .x-words { display: flex; gap: 46px; font: 400 36px var(--mono); color: var(--muted); }
+        .x-words .vis { color: var(--amber); font-weight: 700; }
+        .x-rule { width: 720px; height: 3px; background: var(--amber); display: block; transform-origin: center; }
+      </style>
+      <div id="root" data-composition-id="s11-close" data-width="1920" data-height="1080">
+        <div class="x-stage">
+          <div class="x-body">
+            <div class="panel x-chat">
+              <div class="x-msg x-user">Can I get a refund after 60 days?</div>
+              <div class="x-msg x-bot">Yes! Refunds are available anytime.</div>
+              <div class="chip x-open"><span class="led warn"></span>open trace</div>
+            </div>
+            <div class="panel x-wf">
+              <div class="kicker">trace 9c1e07aa</div>
+              <div style="height:20px"></div>
+              <div class="x-row x-r0"><span class="nm">support_agent</span><div class="x-track"><i></i></div></div>
+              <div class="x-row x-r1"><span class="x-flag"></span><span class="nm"><span class="ind">└ </span>retrieve_policy</span><div class="x-track"><i></i></div></div>
+              <div class="x-row x-r2"><span class="nm"><span class="ind">└ </span>chat gpt-4o-mini</span><div class="x-track"><i></i></div></div>
+              <div class="x-detail">
+                <div><span class="k2">retrieved </span>refund_policy_2023.pdf</div>
+                <div><span class="k2">status    </span><span class="bad">outdated, replaced in 2025</span></div>
+              </div>
+            </div>
+            <div class="x-no"><div class="display"><em>No guessing.</em></div></div>
+          </div>
+          <div class="x-end">
+            <div class="display t">AI Observability</div>
+            <span class="x-rule"></span>
+            <div class="x-words"><span class="w1">Every step.</span><span class="w2">Every token.</span><span class="w3">Every decision.</span><span class="vis w4">Visible.</span></div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const D = 19.74;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(".x-chat", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.05);
+          tl.fromTo(".x-open", { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 2.0);
+          tl.fromTo(".x-wf", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out" }, 2.3);
+          tl.fromTo(".x-row", { opacity: 0 }, { opacity: 1, duration: 0.25, stagger: 0.18 }, 2.6);
+          tl.fromTo(".x-track i", { scaleX: 0 }, { scaleX: 1, duration: 0.6, stagger: 0.18, ease: "power3.out" }, 2.7);
+          // the retrieval step pulled an outdated policy
+          tl.fromTo(".x-flag", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 5.1);
+          tl.to(".x-r1 i", { backgroundColor: "#f2594b", duration: 0.3 }, 5.2);
+          tl.fromTo(".x-detail", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.2);
+          tl.fromTo(".x-no .display", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 8.3);
+          // that's AI observability
+          tl.to(".x-body", { opacity: 0, scale: 0.97, filter: "blur(8px)", duration: 0.5, ease: "power2.in" }, 9.3);
+          tl.fromTo(".x-end .t", { opacity: 0, y: 40, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "expo.out" }, 9.7);
+          tl.fromTo(".x-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power3.inOut" }, 10.3);
+          tl.fromTo(".w1", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 11.7);
+          tl.fromTo(".w2", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 12.7);
+          tl.fromTo(".w3", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 13.7);
+          tl.fromTo(".w4", { opacity: 0, y: 16, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(2)" }, 14.8);
+          tl.to(".x-stage", { opacity: 0, duration: 1.2, ease: "power1.in" }, D - 1.3);
+          window.__timelines["s11-close"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

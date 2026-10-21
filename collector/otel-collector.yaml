@@ -1,0 +1,58 @@
+# OpenTelemetry Collector: receive OTLP from the app, scrub sensitive data, fan out to backends.
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+      grpc:
+        endpoint: 0.0.0.0:4317
+
+processors:
+  # Privacy at the edge: the app can be sloppy, the data that leaves still is not.
+  attributes/scrub:
+    actions:
+      - key: user.id
+        action: hash            # keep per-user analytics, drop the raw email
+      - key: gen_ai.input.messages
+        action: delete          # never ship raw prompts
+      - key: input.value
+        action: delete
+      - key: deployment.environment
+        value: workshop
+        action: upsert
+  batch:
+    timeout: 2s
+
+exporters:
+  # Local Langfuse (running in Docker on the host)
+  otlphttp/langfuse:
+    endpoint: http://host.docker.internal:3000/api/public/otel
+    headers:
+      Authorization: "Basic ${env:LANGFUSE_AUTH}"
+      x-langfuse-ingestion-version: "4"
+  # Prints a one-line summary of every batch to the collector log
+  debug:
+    verbosity: basic
+
+  # Uncomment to fan out to more backends. No application change is needed.
+  # otlphttp/langsmith:
+  #   endpoint: https://api.smith.langchain.com/otel
+  #   headers:
+  #     x-api-key: ${env:LANGSMITH_API_KEY}
+  #     Langsmith-Project: ai-observability-lab
+  # otlphttp/dynatrace:
+  #   endpoint: https://${env:DT_ENV_ID}.live.dynatrace.com/api/v2/otlp
+  #   headers:
+  #     Authorization: "Bearer ${env:DT_PLATFORM_TOKEN}"
+  # otlphttp/datadog:
+  #   traces_endpoint: ${env:DD_OTLP_TRACES_ENDPOINT}   # site-specific, see Datadog docs
+  #   headers:
+  #     dd-api-key: ${env:DD_API_KEY}
+  #     dd-otlp-source: llmobs
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [attributes/scrub, batch]
+      exporters: [otlphttp/langfuse, debug]

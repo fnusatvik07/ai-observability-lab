@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        .h-stage { position: absolute; inset: 0; }
+        .h-chat {
+          position: absolute; left: 140px; top: 230px; width: 920px;
+          padding: 44px 48px; display: flex; flex-direction: column; gap: 30px;
+        }
+        .h-chat-head { display: flex; align-items: center; gap: 16px; font: 400 22px var(--mono); color: var(--muted); letter-spacing: 0.08em; }
+        .h-chat-head .led { width: 12px; height: 12px; border-radius: 50%; background: var(--ok); display: block; }
+        .h-msg { max-width: 720px; padding: 26px 32px; border-radius: 26px; font: 400 32px/1.4 var(--mono); }
+        .h-user { align-self: flex-end; background: var(--surface-2); border: 2px solid var(--line); color: var(--fg); border-bottom-right-radius: 8px; }
+        .h-bot { align-self: flex-start; background: rgba(123, 143, 245, 0.14); border: 2px solid rgba(123, 143, 245, 0.45); color: var(--fg); border-bottom-left-radius: 8px; position: relative; }
+        .h-who { display: block; font: 700 18px var(--mono); letter-spacing: 0.16em; color: var(--muted); margin-bottom: 10px; }
+        .h-strike { position: absolute; left: 24px; right: 24px; top: 60%; height: 5px; background: var(--err); border-radius: 3px; transform-origin: left center; }
+        .h-stamp {
+          position: absolute; right: -40px; top: -38px; padding: 10px 22px; border: 4px solid var(--err); border-radius: 12px;
+          font: 700 30px var(--mono); letter-spacing: 0.2em; color: var(--err); background: rgba(10, 14, 21, 0.9);
+        }
+        .h-policy { align-self: flex-start; }
+        .h-dash { position: absolute; right: 140px; top: 230px; width: 620px; padding: 40px 44px; }
+        .h-dash-title { font: 700 20px var(--mono); letter-spacing: 0.2em; color: var(--muted); margin-bottom: 28px; }
+        .h-row { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-top: 2px solid var(--line); font: 400 30px var(--mono); }
+        .h-row .lbl { color: var(--muted); }
+        .h-row .val { display: flex; align-items: center; gap: 14px; color: var(--ok); }
+        .h-row .val .led { width: 14px; height: 14px; border-radius: 50%; background: var(--ok); display: block; }
+        .h-why { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+        .h-why .display { font-size: 300px; }
+        .h-title { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 36px; }
+        .h-title .display { font-size: 200px; text-align: center; }
+        .h-title .lede { font-size: 32px; letter-spacing: 0.04em; }
+        .h-rule { width: 760px; height: 3px; background: var(--amber); transform-origin: center; display: block; }
+      </style>
+      <div id="root" data-composition-id="s01-hook" data-width="1920" data-height="1080">
+        <div class="h-stage">
+          <div class="h-chat panel">
+            <div class="h-chat-head"><span class="led"></span><span>SUPPORT AGENT · LIVE</span></div>
+            <div class="h-msg h-user"><span class="h-who">CUSTOMER</span>Can I get a refund after 60 days?</div>
+            <div class="h-msg h-bot"><span class="h-who">AGENT</span>Yes! Refunds are available anytime.<span class="h-strike"></span><span class="h-stamp">WRONG</span></div>
+            <div class="chip h-policy"><span class="led err"></span>Actual policy: refunds within 30 days</div>
+          </div>
+          <div class="h-dash panel">
+            <div class="h-dash-title">PRODUCTION DASHBOARD</div>
+            <div class="h-row"><span class="lbl">Uptime</span><span class="val"><span class="led"></span>100%</span></div>
+            <div class="h-row"><span class="lbl">Errors</span><span class="val"><span class="led"></span>0</span></div>
+            <div class="h-row"><span class="lbl">Crashes</span><span class="val"><span class="led"></span>0</span></div>
+            <div class="h-row"><span class="lbl">HTTP status</span><span class="val"><span class="led"></span>200 OK</span></div>
+          </div>
+          <div class="h-why"><div class="display"><em>Why?</em></div></div>
+          <div class="h-title">
+            <div class="kicker">Explained in four minutes</div>
+            <div class="display">AI Observability</div>
+            <span class="h-rule"></span>
+            <div class="lede">See every step inside your LLM apps and agents</div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const O = 0.5; // narration lead-in on the first scene
+          const t = (s) => O + s;
+          const tl = gsap.timeline({ paused: true });
+
+          tl.fromTo(".h-chat", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.05);
+          tl.fromTo(".h-user", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, t(0.2));
+          tl.fromTo(".h-bot", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "back.out(1.6)" }, t(2.4));
+          // "That's wrong."
+          tl.fromTo(".h-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.35, ease: "power2.inOut" }, t(3.9));
+          tl.fromTo(".h-stamp", { opacity: 0, scale: 1.8, rotation: -14 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.35, ease: "back.out(2)" }, t(4.1));
+          tl.to(".h-bot", { borderColor: "rgba(242, 89, 75, 0.7)", backgroundColor: "rgba(242, 89, 75, 0.1)", duration: 0.3 }, t(4.0));
+          // "Your policy says thirty days."
+          tl.fromTo(".h-policy", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, t(5.1));
+          // "And yet, your dashboard is green."
+          tl.fromTo(".h-dash", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.7, ease: "expo.out" }, t(7.4));
+          tl.fromTo(".h-row", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.18, ease: "power2.out" }, t(7.9));
+          tl.fromTo(".h-row .led", { scale: 0.4 }, { scale: 1, duration: 0.4, stagger: 0.25, ease: "back.out(3)" }, t(9.4));
+          // "Just a confident, wrong answer."
+          tl.to(".h-bot", { scale: 1.04, duration: 0.25, yoyo: true, repeat: 1, ease: "power1.inOut" }, t(11.7));
+          // "So how do you find out why"
+          tl.to([".h-chat", ".h-dash"], { opacity: 0.12, filter: "blur(6px)", duration: 0.6, ease: "power2.out" }, t(13.8));
+          tl.fromTo(".h-why .display", { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" }, t(14.7));
+          // "That's the job of AI observability."
+          tl.to(".h-why .display", { opacity: 0, scale: 1.08, filter: "blur(10px)", duration: 0.5, ease: "power2.in" }, t(15.7));
+          tl.to([".h-chat", ".h-dash"], { opacity: 0, duration: 0.5 }, t(15.7));
+          tl.fromTo(".h-title .kicker", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, t(16.4));
+          tl.fromTo(".h-title .display", { opacity: 0, y: 40, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "expo.out" }, t(16.6));
+          tl.fromTo(".h-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power3.inOut" }, t(17.0));
+          tl.fromTo(".h-title .lede", { opacity: 0 }, { opacity: 1, duration: 0.6 }, t(17.4));
+          tl.to(".h-stage", { opacity: 0, duration: 0.4, ease: "power1.in" }, 19.214 - 0.42);
+
+          window.__timelines["s01-hook"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        .d-stage { position: absolute; inset: 0; }
+        .d-split { position: absolute; left: 120px; right: 120px; top: 250px; height: 520px; display: grid; grid-template-columns: 1fr 1fr; }
+        .d-col { padding: 40px 80px; display: flex; flex-direction: column; gap: 34px; }
+        .d-col .display { font-size: 128px; }
+        .d-col.mon .kicker { color: var(--muted); }
+        .d-col.mon .display { color: var(--muted); }
+        .d-divider { position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: var(--line); transform-origin: top center; }
+        .d-leds { display: flex; gap: 16px; }
+        .d-leds .led { width: 22px; height: 22px; border-radius: 50%; display: block; background: var(--ok); }
+        .d-sub { font: 400 28px/1.5 var(--mono); color: var(--muted); }
+        .d-sys { position: absolute; left: 0; right: 0; top: 190px; display: flex; flex-direction: column; align-items: center; gap: 28px; }
+        .d-sys svg { width: 1500px; height: 620px; overflow: visible; }
+        .d-sys .caption { font: 400 30px var(--mono); color: var(--muted); }
+        .d-final { position: absolute; left: 0; right: 0; top: 300px; display: flex; flex-direction: column; align-items: center; gap: 40px; }
+        .d-line { display: flex; align-items: baseline; gap: 40px; }
+        .d-line .lbl { font: 400 34px var(--mono); color: var(--muted); width: 520px; text-align: right; }
+        .d-line .display { width: 640px; }
+        .d-line.trad .display { font-size: 110px; color: var(--muted); }
+        .d-line.ai .display { font-size: 190px; }
+        .d-line.ai .lbl { color: var(--fg); }
+      </style>
+      <div id="root" data-composition-id="s02-define" data-width="1920" data-height="1080">
+        <div class="d-stage">
+          <div class="d-split">
+            <div class="d-col mon">
+              <div class="kicker">Monitoring</div>
+              <div class="display">Is it broken?</div>
+              <div class="d-leds"><span class="led"></span><span class="led"></span><span class="led"></span><span class="led"></span></div>
+              <div class="d-sub">Known questions. Dashboards and alerts.</div>
+            </div>
+            <div class="d-col obs">
+              <div class="kicker">Observability</div>
+              <div class="display"><em>Why</em> is it broken?</div>
+              <div class="d-sub">New questions, answered from the data your system already emits.</div>
+            </div>
+            <span class="d-divider"></span>
+          </div>
+
+          <div class="d-sys">
+            <svg viewBox="0 0 1500 620">
+              <defs>
+                <marker id="d-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f5a800" /></marker>
+              </defs>
+              <g class="d-inner">
+                <line x1="250" y1="190" x2="400" y2="310" stroke="#7b8ff5" stroke-width="4" />
+                <line x1="400" y1="310" x2="560" y2="200" stroke="#7b8ff5" stroke-width="4" />
+                <line x1="400" y1="310" x2="560" y2="430" stroke="#7b8ff5" stroke-width="4" />
+                <line x1="250" y1="430" x2="400" y2="310" stroke="#7b8ff5" stroke-width="4" />
+                <circle cx="250" cy="190" r="30" fill="#172036" stroke="#7b8ff5" stroke-width="4" />
+                <circle cx="250" cy="430" r="30" fill="#172036" stroke="#7b8ff5" stroke-width="4" />
+                <circle cx="400" cy="310" r="44" fill="#f5a800" />
+                <circle cx="560" cy="200" r="30" fill="#172036" stroke="#7b8ff5" stroke-width="4" />
+                <circle cx="560" cy="430" r="30" fill="#172036" stroke="#3dbe8b" stroke-width="4" />
+              </g>
+              <rect class="d-lid" x="120" y="80" width="580" height="460" rx="28" fill="#111827" />
+              <rect x="120" y="80" width="580" height="460" rx="28" fill="none" stroke="#273352" stroke-width="4" />
+              <text x="410" y="40" text-anchor="middle" fill="#9aa1b5" font-family="JetBrains Mono" font-size="28" letter-spacing="4">YOUR SYSTEM</text>
+              <g class="d-sig">
+                <path d="M700 200 C 860 200, 900 130, 1080 130" fill="none" stroke="#f5a800" stroke-width="5" stroke-dasharray="14 12" marker-end="url(#d-arrow)" />
+                <path d="M700 310 L 1080 310" fill="none" stroke="#f5a800" stroke-width="5" stroke-dasharray="14 12" marker-end="url(#d-arrow)" />
+                <path d="M700 420 C 860 420, 900 490, 1080 490" fill="none" stroke="#f5a800" stroke-width="5" stroke-dasharray="14 12" marker-end="url(#d-arrow)" />
+              </g>
+              <g class="d-labels" font-family="JetBrains Mono" font-size="34" fill="#eeeae0">
+                <text class="d-l1" x="1110" y="142">logs</text>
+                <text class="d-l2" x="1110" y="322">metrics</text>
+                <text class="d-l3" x="1110" y="502">traces</text>
+              </g>
+            </svg>
+            <div class="caption">Understand the inside, from what comes out.</div>
+          </div>
+
+          <div class="d-final">
+            <div class="d-line trad"><span class="lbl">Traditional software</span><span class="display">useful</span></div>
+            <div class="d-line ai"><span class="lbl">AI systems</span><span class="display"><em>essential</em></span></div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const D = 16.05;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(".d-divider", { scaleY: 0 }, { scaleY: 1, duration: 0.8, ease: "power3.inOut" }, 0);
+          tl.fromTo(".d-col.mon > *", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: "power3.out" }, 0.1);
+          tl.fromTo(".d-leds .led", { scale: 0 }, { scale: 1, duration: 0.35, stagger: 0.08, ease: "back.out(3)" }, 1.4);
+          tl.fromTo(".d-col.obs > *", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.55, stagger: 0.14, ease: "expo.out" }, 3.1);
+          tl.to(".d-col.mon", { opacity: 0.35, duration: 0.5 }, 3.4);
+
+          // A system is observable when...
+          tl.to(".d-split", { opacity: 0, y: -40, duration: 0.5, ease: "power2.in" }, 5.0);
+          tl.fromTo(".d-sys", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 5.5);
+          tl.fromTo(".d-inner", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 5.5);
+          // ...understand what's happening inside it
+          tl.to(".d-lid", { opacity: 0.08, duration: 0.9, ease: "power2.inOut" }, 7.3);
+          tl.fromTo(".d-inner circle", { scale: 0.6, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.5, stagger: 0.07, ease: "back.out(2.5)" }, 7.5);
+          // ...just from the data it emits
+          tl.fromTo(".d-sig path", { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.15 }, 9.5);
+          tl.fromTo(".d-sig path", { strokeDashoffset: 0 }, { strokeDashoffset: -260, duration: 6, ease: "none" }, 9.5);
+          tl.fromTo([".d-l1", ".d-l2", ".d-l3"], { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, stagger: 0.15, ease: "power2.out" }, 9.9);
+
+          // For traditional software / For AI
+          tl.to(".d-sys", { opacity: 0, scale: 0.96, duration: 0.45, ease: "power2.in" }, 11.0);
+          tl.fromTo(".d-line.trad", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 11.4);
+          tl.fromTo(".d-line.ai", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, 14.0);
+          tl.to(".d-line.trad", { opacity: 0.4, duration: 0.5 }, 14.0);
+          tl.to(".d-stage", { opacity: 0, duration: 0.4, ease: "power1.in" }, D - 0.42);
+          window.__timelines["s02-define"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

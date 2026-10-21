@@ -1,0 +1,307 @@
+1
+00:00:00,500 --> 00:00:03,700
+Your AI agent just told a customer they can get a refund anytime.
+
+2
+00:00:03,720 --> 00:00:04,800
+That's wrong.
+
+3
+00:00:04,820 --> 00:00:06,780
+Your policy says thirty days.
+
+4
+00:00:06,800 --> 00:00:09,040
+And yet, your dashboard is green.
+
+5
+00:00:09,060 --> 00:00:10,060
+No errors.
+
+6
+00:00:10,080 --> 00:00:11,000
+No crashes.
+
+7
+00:00:11,020 --> 00:00:13,200
+Just a confident, wrong answer.
+
+8
+00:00:13,220 --> 00:00:15,620
+So how do you find out why it happened?
+
+9
+00:00:15,640 --> 00:00:18,350
+That's the job of AI observability.
+
+10
+00:00:19,214 --> 00:00:21,804
+Monitoring tells you whether something is broken.
+
+11
+00:00:22,334 --> 00:00:24,004
+Observability tells you why.
+
+12
+00:00:24,534 --> 00:00:30,004
+A system is observable when you can understand what's happening inside it, just from the data it emits.
+
+13
+00:00:30,554 --> 00:00:32,684
+For traditional software, that's useful.
+
+14
+00:00:33,134 --> 00:00:34,744
+For AI, it's essential.
+
+15
+00:00:35,264 --> 00:00:38,414
+Because AI breaks the old rules in three ways.
+
+16
+00:00:38,804 --> 00:00:39,844
+First, it's non-deterministic.
+
+17
+00:00:39,864 --> 00:00:42,864
+The same question can get a different answer every time.
+
+18
+00:00:42,884 --> 00:00:45,484
+Second, agents are chains of decisions.
+
+19
+00:00:45,504 --> 00:00:50,964
+One request might plan, search your documents, call two tools, and call the model three times.
+
+20
+00:00:50,984 --> 00:00:53,644
+A mistake at any step ruins the final answer.
+
+21
+00:00:53,664 --> 00:00:57,004
+And third, every request costs money, measured in tokens.
+
+22
+00:00:57,024 --> 00:00:59,204
+A bug in a normal app makes it slow.
+
+23
+00:00:59,224 --> 00:01:01,574
+A bug in an agent can make it expensive.
+
+24
+00:01:02,114 --> 00:01:04,604
+Observability rests on four ideas.
+
+25
+00:01:05,334 --> 00:01:06,884
+Let's follow one small agent.
+
+26
+00:01:07,294 --> 00:01:10,664
+It answers: what's the weather in Paris, and do I need an umbrella?
+
+27
+00:01:11,554 --> 00:01:12,454
+Logs are timestamped events.
+
+28
+00:01:12,474 --> 00:01:13,754
+Request received.
+
+29
+00:01:13,774 --> 00:01:16,064
+Weather tool timed out, retrying.
+
+30
+00:01:16,354 --> 00:01:17,974
+Lots of detail.
+
+31
+00:01:17,994 --> 00:01:21,664
+But with thousands of users, it's hard to tell which lines belong together.
+
+32
+00:01:22,412 --> 00:01:24,722
+Metrics are numbers over time.
+
+33
+00:01:25,392 --> 00:01:25,962
+Requests per minute.
+
+34
+00:01:26,712 --> 00:01:28,202
+Ninety-fifth percentile latency.
+
+35
+00:01:29,072 --> 00:01:29,642
+Tokens used.
+
+36
+00:01:30,352 --> 00:01:31,182
+Dollars spent today.
+
+37
+00:01:31,632 --> 00:01:33,582
+They're perfect for dashboards and alerts.
+
+38
+00:01:33,772 --> 00:01:37,642
+But they tell you that something changed, not which request changed.
+
+39
+00:01:38,270 --> 00:01:39,891
+Traces connect it all.
+
+40
+00:01:40,461 --> 00:01:45,091
+A trace follows one request from start to finish, under a single trace ID.
+
+41
+00:01:45,701 --> 00:01:48,631
+And every step inside that trace is a span.
+
+42
+00:01:49,121 --> 00:01:50,551
+The document search is a span.
+
+43
+00:01:50,841 --> 00:01:52,231
+The weather tool is a span.
+
+44
+00:01:52,581 --> 00:01:58,991
+The model call is a span, carrying the model name, input and output tokens, cost, and duration.
+
+45
+00:02:00,041 --> 00:02:02,751
+Spans nest inside each other, so you see the whole tree.
+
+46
+00:02:03,235 --> 00:02:05,665
+So how does that data leave your app?
+
+47
+00:02:06,095 --> 00:02:07,945
+Through OpenTelemetry, or OTel.
+
+48
+00:02:08,355 --> 00:02:09,735
+It's an open, vendor-neutral standard.
+
+49
+00:02:09,755 --> 00:02:12,855
+Your code creates spans with the OTel SDK.
+
+50
+00:02:12,875 --> 00:02:23,605
+They're batched in the background and shipped over a protocol called OTLP, either straight to a backend, or through a Collector that can filter, redact, and route them.
+
+51
+00:02:23,989 --> 00:02:28,949
+For AI, OTel adds the GenAI semantic conventions.
+
+52
+00:02:28,969 --> 00:02:36,369
+Shared names, like gen_ai.request.model, and gen_ai.usage.input_tokens, so every tool reads your data the same way.
+
+53
+00:02:36,389 --> 00:02:37,329
+Instrument once.
+
+54
+00:02:37,349 --> 00:02:38,799
+Send it anywhere.
+
+55
+00:02:39,295 --> 00:02:41,425
+In practice, it takes a few lines.
+
+56
+00:02:42,175 --> 00:02:51,325
+Wrap your model client, decorate the functions you care about, and every call becomes a span, with its inputs, outputs, tokens, and cost recorded for you.
+
+57
+00:02:52,105 --> 00:02:53,185
+So what should you watch?
+
+58
+00:02:53,205 --> 00:02:54,415
+Latency.
+
+59
+00:02:54,865 --> 00:03:00,715
+Not the average, but the ninety-fifth percentile, and time to first token, which is what users actually feel.
+
+60
+00:03:01,505 --> 00:03:04,715
+Errors, like rate limits, timeouts, and failed tools.
+
+61
+00:03:05,245 --> 00:03:08,715
+Tokens and cost, per request, per user, and per feature.
+
+62
+00:03:09,225 --> 00:03:12,675
+And quality, from user feedback or automated evaluations.
+
+63
+00:03:13,285 --> 00:03:20,115
+Then tag everything with the user, the session, and the prompt version, so after every release you can answer one question.
+
+64
+00:03:20,545 --> 00:03:22,475
+Did yesterday's change make things worse?
+
+65
+00:03:23,203 --> 00:03:26,013
+You don't have to build any of this yourself.
+
+66
+00:03:26,763 --> 00:03:33,593
+LangSmith and Langfuse are built for LLM apps, and Langfuse is open source, so you can run it on your own laptop.
+
+67
+00:03:34,423 --> 00:03:37,503
+Arize Phoenix is another open option.
+
+68
+00:03:37,523 --> 00:03:41,843
+Datadog and Dynatrace put your AI traces right next to your infrastructure.
+
+69
+00:03:41,863 --> 00:03:45,963
+They use different words: runs, observations, spans.
+
+70
+00:03:45,983 --> 00:03:48,543
+But the ideas are the same.
+
+71
+00:03:48,563 --> 00:03:53,193
+And more and more, so is the foundation underneath them: OpenTelemetry.
+
+72
+00:03:53,605 --> 00:03:55,407
+Back to that wrong refund answer.
+
+73
+00:03:55,837 --> 00:03:58,067
+Open the trace, and you see it in seconds.
+
+74
+00:03:58,637 --> 00:04:01,467
+The retrieval step pulled an outdated policy document.
+
+75
+00:04:02,037 --> 00:04:02,607
+No guessing.
+
+76
+00:04:03,197 --> 00:04:04,647
+That's AI observability.
+
+77
+00:04:05,297 --> 00:04:08,747
+Every step, every token, every decision, visible.

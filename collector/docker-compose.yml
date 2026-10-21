@@ -1,0 +1,13 @@
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.120.0
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./otel-collector.yaml:/etc/otelcol/config.yaml:ro
+    environment:
+      LANGFUSE_AUTH: ${LANGFUSE_AUTH:-cGstbGYtbG9jYWwtZGVtby1wdWJsaWM6c2stbGYtbG9jYWwtZGVtby1zZWNyZXQ=}
+    ports:
+      - "4318:4318"   # OTLP/HTTP
+      - "4317:4317"   # OTLP/gRPC
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

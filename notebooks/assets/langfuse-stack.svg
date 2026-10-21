@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" width="1200" height="520" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#64748B"/></marker>
+    <pattern id="g" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#fff" stroke-opacity=".035"/></pattern>
+  </defs>
+  <rect width="1200" height="520" rx="20" fill="#0B1020"/><rect width="1200" height="520" rx="20" fill="url(#g)"/>
+  <text x="48" y="56" font-size="14" font-weight="700" letter-spacing="3" fill="#2DD4BF">LANGFUSE SELF-HOSTED STACK</text>
+  <text x="48" y="86" font-size="22" font-weight="700" fill="#F8FAFC">Six containers, one docker compose up</text>
+
+  <!-- app -->
+  <rect x="48" y="200" width="200" height="110" rx="14" fill="#151B33" stroke="#334155"/>
+  <text x="148" y="240" text-anchor="middle" font-size="17" font-weight="700" fill="#F8FAFC">Your app</text>
+  <text x="148" y="264" text-anchor="middle" font-size="13" fill="#94A3B8">Langfuse SDK</text>
+  <text x="148" y="284" text-anchor="middle" font-size="13" fill="#94A3B8">or any OTel exporter</text>
+
+  <!-- web -->
+  <rect x="330" y="190" width="230" height="130" rx="14" fill="#1E1B4B" stroke="#8B5CF6" stroke-width="2"/>
+  <text x="445" y="232" text-anchor="middle" font-size="17" font-weight="700" fill="#F8FAFC">langfuse-web</text>
+  <text x="445" y="256" text-anchor="middle" font-size="13" fill="#C4B5FD">UI + ingestion API</text>
+  <text x="445" y="280" text-anchor="middle" font-size="13" fill="#C4B5FD">localhost:3000</text>
+  <text x="445" y="300" text-anchor="middle" font-size="12" fill="#94A3B8">/api/public/otel</text>
+
+  <!-- redis -->
+  <rect x="650" y="120" width="200" height="90" rx="14" fill="#151B33" stroke="#F43F5E"/>
+  <text x="750" y="158" text-anchor="middle" font-size="16" font-weight="700" fill="#F8FAFC">Redis</text>
+  <text x="750" y="182" text-anchor="middle" font-size="13" fill="#94A3B8">ingestion queue + cache</text>
+  <!-- minio -->
+  <rect x="650" y="300" width="200" height="90" rx="14" fill="#151B33" stroke="#F59E0B"/>
+  <text x="750" y="338" text-anchor="middle" font-size="16" font-weight="700" fill="#F8FAFC">MinIO (S3)</text>
+  <text x="750" y="362" text-anchor="middle" font-size="13" fill="#94A3B8">raw events + media</text>
+
+  <!-- worker -->
+  <rect x="930" y="190" width="220" height="130" rx="14" fill="#042F2E" stroke="#2DD4BF" stroke-width="2"/>
+  <text x="1040" y="236" text-anchor="middle" font-size="17" font-weight="700" fill="#F8FAFC">langfuse-worker</text>
+  <text x="1040" y="260" text-anchor="middle" font-size="13" fill="#99F6E4">processes events,</text>
+  <text x="1040" y="280" text-anchor="middle" font-size="13" fill="#99F6E4">computes cost, evals</text>
+
+  <!-- clickhouse -->
+  <rect x="930" y="400" width="220" height="80" rx="14" fill="#151B33" stroke="#FACC15"/>
+  <text x="1040" y="434" text-anchor="middle" font-size="16" font-weight="700" fill="#F8FAFC">ClickHouse</text>
+  <text x="1040" y="458" text-anchor="middle" font-size="13" fill="#94A3B8">traces, observations, scores</text>
+  <!-- postgres -->
+  <rect x="330" y="400" width="230" height="80" rx="14" fill="#151B33" stroke="#60A5FA"/>
+  <text x="445" y="434" text-anchor="middle" font-size="16" font-weight="700" fill="#F8FAFC">Postgres</text>
+  <text x="445" y="458" text-anchor="middle" font-size="13" fill="#94A3B8">users, projects, keys, prompts</text>
+
+  <g stroke="#64748B" stroke-width="2" fill="none" marker-end="url(#a)">
+    <path d="M248 255H326"/>
+    <path d="M560 225C600 225 610 165 646 165"/>
+    <path d="M560 290C600 290 610 345 646 345"/>
+    <path d="M850 165C890 165 890 225 926 225"/>
+    <path d="M850 345C890 345 890 290 926 290"/>
+    <path d="M1040 320V396"/>
+    <path d="M445 320V396"/>
+    <path d="M926 440H564" stroke-dasharray="5 6"/>
+  </g>
+  <text x="287" y="244" text-anchor="middle" font-size="12" fill="#94A3B8">OTLP / HTTP</text>
+  <text x="745" y="452" text-anchor="middle" font-size="12" fill="#94A3B8">UI reads analytics from ClickHouse</text>
+</svg>
