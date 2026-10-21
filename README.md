@@ -70,11 +70,11 @@ Written for complete beginners and designed for a one-hour class. Every notebook
 
 | File | What it is |
 |---|---|
-| [`slides/AI-Observability.pptx`](slides/AI-Observability.pptx) | 32 slides in an ivory, charcoal and clay-orange design, with speaker notes and the explainer video embedded on slide 4 |
+| [`slides/AI-Observability.pptx`](slides/AI-Observability.pptx) | 32 slides in Anthropic's published brand palette (Dark #141413, Light #FAF9F5, Orange #D97757, Blue #6A9BCC, Green #788C5D) with Poppins headings and Lora body text, speaker notes and the explainer video embedded on slide 4 |
 | [`slides/AI-Observability.pdf`](slides/AI-Observability.pdf) | Handout version |
 | [`docs/01-session-plan.md`](docs/01-session-plan.md) | Minute-by-minute plan for the hour, teaching tips and likely questions |
 
-Rebuild the deck with `NODE_PATH=$(npm root -g) node slides/build_deck.js` (needs `pptxgenjs`).
+Rebuild the deck with `NODE_PATH=$(npm root -g) node slides/build_deck.js` (needs `pptxgenjs`). For the intended look, install the fonts in [`slides/fonts/`](slides/fonts/) (Poppins and Lora, SIL Open Font License); the PDF already embeds them.
 
 ## How it fits together
 
