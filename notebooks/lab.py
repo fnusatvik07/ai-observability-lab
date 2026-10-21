@@ -42,6 +42,9 @@ KIND_COLORS = {
     "guardrail": "#F472B6",
     "evaluator": "#A3E635",
     "error": "#F43F5E",
+    "whole request": "#8B5CF6",
+    "step": "#F59E0B",
+    "ai call": "#2DD4BF",
 }
 SERIES = ["#2DD4BF", "#8B5CF6", "#F59E0B", "#22D3EE", "#F472B6", "#A3E635"]
 
@@ -270,3 +273,37 @@ def show_trace(trace_id: str, title: str = "Trace waterfall") -> pd.DataFrame:
     obs = langfuse_observations(traceId=trace_id)
     waterfall(trace_frame(obs, trace_id), title)
     return obs
+
+
+# ---------------------------------------------------------------- beginner helpers
+
+
+def spans_frame(spans) -> pd.DataFrame:
+    """Turn finished OpenTelemetry spans into a simple table: one row per step."""
+    t0 = min(s.start_time for s in spans)
+    ids = {s.context.span_id for s in spans}
+    names = {s.context.span_id: s.name for s in spans}
+    rows = []
+    for s in spans:
+        parent = s.parent.span_id if s.parent and s.parent.span_id in ids else None
+        rows.append(
+            {
+                "id": s.context.span_id,
+                "parent": parent,
+                "step (span)": s.name,
+                "inside of": names.get(parent, "(nothing, this is the whole request)"),
+                "took": f"{(s.end_time - s.start_time) / 1e9:.2f} s",
+                "name": s.name,
+                "kind": "whole request" if parent is None else ("ai call" if "ai" in s.name.lower() else "step"),
+                "start": (s.start_time - t0) / 1e9,
+                "duration": (s.end_time - s.start_time) / 1e9,
+                "depth": 0 if parent is None else 1,
+            }
+        )
+    return pd.DataFrame(rows).sort_values("start").reset_index(drop=True)
+
+
+def draw_spans(spans, title: str = "One request, step by step") -> None:
+    """Draw finished OpenTelemetry spans as a timeline (a 'waterfall')."""
+    frame = spans_frame(spans)
+    waterfall(frame[["id", "parent", "name", "kind", "start", "duration", "depth"]], title)

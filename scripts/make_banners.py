@@ -4,13 +4,20 @@ from pathlib import Path
 OUT = Path(__file__).resolve().parent.parent / "notebooks" / "assets"
 
 BANNERS = [
-    ("00", "Setup and Local Stack", "Run Langfuse on Docker and verify every service"),
-    ("01", "Logs, Metrics, Traces, Spans", "Four signals, one function, real data"),
+    ("00", "Setup", "Start the local stack before class"),
+    ("01", "What Is Observability?", "Logs, metrics, traces and spans in plain words"),
+    ("02", "Your First Trace in Langfuse", "Three small changes to a simple function"),
+    ("03", "The Same Function in LangSmith", "Different tool, same ideas"),
+    ("04", "Beyond Langfuse and LangSmith", "OpenTelemetry, Datadog, Dynatrace and more"),
+]
+
+ADVANCED = [
+    ("01", "Signals Deep Dive", "Concurrency, metrics instruments and trace context"),
     ("02", "OpenTelemetry in Depth", "Providers, processors, exporters and context"),
-    ("03", "Tracing Agents with Langfuse", "Observations, sessions, users, scores and cost"),
-    ("04", "Tracing with LangSmith", "Runs, threads, feedback and OTLP ingest"),
+    ("03", "Langfuse in Depth", "Sessions, users, errors, guardrails and scores"),
+    ("04", "LangSmith in Depth", "Runs, threads, feedback and OTLP ingest"),
     ("05", "Latency and Cost Analytics", "Turn traces into answers your team can act on"),
-    ("06", "Enterprise Backends", "Datadog, Dynatrace and choosing without rewriting code"),
+    ("06", "Enterprise Backends", "A Collector, Datadog and Dynatrace"),
 ]
 
 # (start, width, row, color) in a 0..100 timeline: a stylised trace waterfall
@@ -69,7 +76,9 @@ if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     for num, title, subtitle in BANNERS:
         (OUT / f"banner-{num}.svg").write_text(banner(num, title, subtitle))
+    for num, title, subtitle in ADVANCED:
+        (OUT / f"banner-adv-{num}.svg").write_text(banner(num, title, subtitle, kicker="GOING FURTHER"))
     (OUT / "hero.svg").write_text(
         banner("OPEN SOURCE", "AI Observability Lab", "Trace, measure and debug LLM apps and agents", kicker="HANDS-ON")
     )
-    print("wrote", len(BANNERS) + 1, "banners to", OUT)
+    print("wrote", len(BANNERS) + len(ADVANCED) + 1, "banners to", OUT)

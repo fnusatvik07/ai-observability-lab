@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="OpenTelemetry in Depth">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="Your First Trace in Langfuse">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0B1020"/>
@@ -16,8 +16,8 @@
   <rect width="1200" height="300" rx="20" fill="url(#grid)"/>
   <rect width="1200" height="300" rx="20" fill="url(#glow)"/>
   <text x="64" y="92" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="3" fill="#2DD4BF">AI OBSERVABILITY LAB  ·  02</text>
-  <text x="64" y="160" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="50" font-weight="800" fill="#F8FAFC">OpenTelemetry in Depth</text>
-  <text x="64" y="206" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" fill="#94A3B8">Providers, processors, exporters and context</text>
+  <text x="64" y="160" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="50" font-weight="800" fill="#F8FAFC">Your First Trace in Langfuse</text>
+  <text x="64" y="206" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" fill="#94A3B8">Three small changes to a simple function</text>
   <rect x="64" y="236" width="56" height="4" rx="2" fill="#2DD4BF"/>
   <rect x="840.0" y="92" width="300.0" height="16" rx="5" fill="#8B5CF6" opacity="0.92"/>
   <line x1="840" y1="100" x2="1140" y2="100" stroke="#ffffff" stroke-opacity="0.05"/>

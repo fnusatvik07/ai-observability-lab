@@ -4,7 +4,7 @@
 
 <p align="center">
   <b>Trace, measure and debug LLM apps and agents with OpenTelemetry, Langfuse and LangSmith.</b><br>
-  Seven hands-on notebooks, a self-hosted stack in one command, and a narrated explainer video.
+  Beginner-friendly notebooks, a slide deck, a self-hosted stack in one command, and a narrated explainer video.
 </p>
 
 <p align="center">
@@ -52,17 +52,29 @@ The user, organization, project and keys are created automatically on first boot
 
 ## The notebooks
 
-Every notebook runs end to end against the local stack and ships with its outputs, so you can read it on GitHub before running anything.
+Written for complete beginners and designed for a one-hour class. Every notebook uses the **same tiny function**, `weather_assistant(city)`, which looks up the weather and asks an AI model whether to carry an umbrella. The only thing that changes from one notebook to the next is the tool.
 
-| | Notebook | You will learn |
+| | Notebook | What you learn |
 |---|---|---|
-| <img src="notebooks/assets/banner-00.svg" width="220"> | [**00 Setup**](notebooks/00_setup.ipynb) | What each of Langfuse's six containers does, and how to verify the stack and your keys |
-| <img src="notebooks/assets/banner-01.svg" width="220"> | [**01 Signals**](notebooks/01_signals.ipynb) | Logs, metrics, traces and spans on one function, with real data and why each one alone is not enough |
-| <img src="notebooks/assets/banner-02.svg" width="220"> | [**02 OpenTelemetry**](notebooks/02_opentelemetry.ipynb) | Providers, processors, exporters, `traceparent` propagation, sampling, GenAI semantic conventions, OTLP to Langfuse |
-| <img src="notebooks/assets/banner-03.svg" width="220"> | [**03 Langfuse**](notebooks/03_langfuse.ipynb) | `@observe`, the OpenAI drop-in, observation types, sessions, users, errors, guardrails, LLM-as-a-judge, feedback |
-| <img src="notebooks/assets/banner-04.svg" width="220"> | [**04 LangSmith**](notebooks/04_langsmith.ipynb) | `@traceable`, `wrap_openai`, run types, threads, feedback, and OTLP into LangSmith |
-| <img src="notebooks/assets/banner-05.svg" width="220"> | [**05 Analytics**](notebooks/05_analytics.ipynb) | Latency breakdown, p50 vs p95, cost per request and per month, prompt version comparison, SLO checks |
-| <img src="notebooks/assets/banner-06.svg" width="220"> | [**06 Enterprise backends**](notebooks/06_enterprise_backends.ipynb) | An OpenTelemetry Collector that hashes user ids and strips prompts, plus Datadog and Dynatrace configuration |
+| <img src="notebooks/assets/banner-00.svg" width="220"> | [**00 Setup**](notebooks/00_setup.ipynb) | Start Langfuse locally and check your keys (run before class) |
+| <img src="notebooks/assets/banner-01.svg" width="220"> | [**01 What is observability?**](notebooks/01_what_is_observability.ipynb) | Logs, metrics, traces and spans in plain words, explained with parcel tracking |
+| <img src="notebooks/assets/banner-02.svg" width="220"> | [**02 Langfuse**](notebooks/02_langfuse.ipynb) | Your first trace in a real dashboard, with two code changes |
+| <img src="notebooks/assets/banner-03.svg" width="220"> | [**03 LangSmith**](notebooks/03_langsmith.ipynb) | The same function in another tool, and a vocabulary map between tools |
+| <img src="notebooks/assets/banner-04.svg" width="220"> | [**04 Other tools**](notebooks/04_other_tools.ipynb) | OpenTelemetry as the common language, Datadog, Dynatrace, and how to choose |
+
+### Going further
+
+[`notebooks/advanced/`](notebooks/advanced/) holds deeper material for after the class: OpenTelemetry internals and context propagation, sessions, users, guardrails and LLM-as-a-judge scores in Langfuse, latency and cost analytics across models and prompt versions, and an OpenTelemetry Collector that removes personal data before it leaves your network.
+
+## Slides and session plan
+
+| File | What it is |
+|---|---|
+| [`slides/AI-Observability.pptx`](slides/AI-Observability.pptx) | 37 slides with speaker notes and the explainer video embedded on slide 4 |
+| [`slides/AI-Observability.pdf`](slides/AI-Observability.pdf) | Handout version |
+| [`docs/01-session-plan.md`](docs/01-session-plan.md) | Minute-by-minute plan for the hour, teaching tips and likely questions |
+
+Rebuild the deck with `node slides/build_deck.js` (needs `pptxgenjs`, `react-icons`, `react`, `react-dom` and `sharp`).
 
 ## How it fits together
 
@@ -70,13 +82,13 @@ Every notebook runs end to end against the local stack and ships with its output
   <img src="notebooks/assets/otel-pipeline.svg" alt="OpenTelemetry pipeline" width="100%">
 </p>
 
-The demo application is a small weather agent: it retrieves policy snippets, calls a deliberately flaky weather API, and asks an LLM to answer. The same agent is instrumented three ways, so you can compare them side by side:
+The same weather assistant is instrumented three ways, so you can compare them side by side:
 
 | Approach | Where | Backend |
 |---|---|---|
-| Langfuse SDK (`@observe`, OpenAI drop-in) | notebook 03, `demo/langfuse_demo.py` | Langfuse |
-| LangSmith SDK (`@traceable`, `wrap_openai`) | notebook 04, `demo/langsmith_demo.py` | LangSmith |
-| Plain OpenTelemetry with GenAI conventions | notebooks 02 and 06, `demo/otel_demo.py` | Any OTLP backend |
+| Langfuse SDK (`@observe`, OpenAI drop-in) | notebook 02, `demo/langfuse_demo.py` | Langfuse |
+| LangSmith SDK (`@traceable`, `wrap_openai`) | notebook 03, `demo/langsmith_demo.py` | LangSmith |
+| Plain OpenTelemetry | notebooks 01 and 04, `demo/otel_demo.py` | Any OTLP backend |
 
 <p align="center">
   <img src="notebooks/assets/langfuse-stack.svg" alt="Langfuse self-hosted stack" width="100%">
@@ -96,7 +108,7 @@ The demo application is a small weather agent: it retrieves policy snippets, cal
 
 ## Optional: LangSmith
 
-Notebook 04 runs without a key (tracing is simply off). To send traces, add to `.env`:
+Notebook 03 runs without a key (tracing is simply off). To send traces, add to `.env`:
 
 ```bash
 LANGSMITH_TRACING=true
@@ -108,11 +120,12 @@ LANGSMITH_PROJECT=ai-observability-lab
 
 ```text
 .
-├── notebooks/          seven notebooks, lab.py helpers, SVG banners and diagrams
+├── notebooks/          beginner notebooks 00 to 04, advanced/ deep dives, helpers and art
+├── slides/             the deck (.pptx, .pdf) and the script that builds it
 ├── demo/               the same agent as plain scripts (Langfuse, LangSmith, OpenTelemetry)
 ├── langfuse/           Docker Compose for self-hosted Langfuse v4 with headless init
 ├── collector/          OpenTelemetry Collector config: scrub, batch, fan out
-├── docs/               session plan, slide content, video script, demo runbook
+├── docs/               session plan, video script, demo runbook
 ├── video/              HyperFrames source for the explainer, renders to video/out/
 └── scripts/            banner generator
 ```

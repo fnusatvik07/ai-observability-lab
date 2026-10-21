@@ -17,15 +17,14 @@ make lab        # opens JupyterLab
 
 ## Flow
 
+The full minute-by-minute plan is in [01-session-plan.md](01-session-plan.md). The live parts:
+
 | Minutes | Notebook | What to show | The line to say |
 |---|---|---|---|
-| 3 | `00_setup` | The stack diagram, `docker compose ps` table | "Six containers, the same shape as most observability backends" |
-| 3 | `01_signals` | Interleaved logs, the metrics histogram, the waterfall | "Metrics say p95 got worse. Traces say why." |
-| 3 | `02_opentelemetry` | `traceparent` header, the flush demo, section 8 table | "We sent no Langfuse code, and it still knew which span was the LLM call." |
-| 4 | `03_langfuse` | Guardrail + judge waterfall, then the same trace in the UI: Sessions, Users, Scores | "Every step, every token, every decision." |
-| 2 | `06_enterprise_backends` | The privacy check table | "The app leaked an email. The Collector made sure it never left." |
-
-Notebooks `04_langsmith` and `05_analytics` are great take-home material if time is short.
+| 5 | `01_what_is_observability` | The log lines, the three metric numbers, the trace picture | "Metrics say it is slow. The trace says which step." |
+| 6 | `02_langfuse` | The two `# NEW` lines, then the trace in the Langfuse UI | "We never wrote code for the AI row. The import did it." |
+| 3 | `03_langsmith` | `@traceable` next to `@observe()`, the vocabulary table | "Different words, same ideas." |
+| 3 | `04_other_tools` | The plain OpenTelemetry trace arriving in Langfuse | "Choosing a tool is choosing an address." |
 
 ## If something breaks
 

@@ -31,7 +31,7 @@ lab: ## Open JupyterLab on the notebooks
 	.venv/bin/jupyter lab notebooks/
 
 test: ## Execute every notebook top to bottom against the running stack
-	@for nb in notebooks/0*.ipynb; do \
+	@for nb in notebooks/0*.ipynb notebooks/advanced/0*.ipynb; do \
 		echo "running $$nb"; \
 		.venv/bin/jupyter nbconvert --to notebook --execute --inplace \
 			--ExecutePreprocessor.timeout=600 --ExecutePreprocessor.kernel_name=ai-observability $$nb || exit 1; \
